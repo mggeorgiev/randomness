@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "coins": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 32747,
+      "useSSL": false
+    }
+  }
+}

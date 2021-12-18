@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -12,6 +7,11 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace rondomness
 {
@@ -24,7 +24,7 @@ namespace rondomness
             _logger = log;
         }
 
-        [FunctionName("Clusterring")]
+        [FunctionName("points")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiParameter(name: "points", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Points** parameter")]
@@ -42,10 +42,10 @@ namespace rondomness
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             points = points ?? data?.points;
 
-            if(points != null)
+            if (points != null)
                 executions = Convert.ToInt32(points);
-            if (executions > 1000)
-                return new BadRequestObjectResult("Cannot return more than 1000 points");
+            if (executions > 1000 && executions < 1)
+                return new BadRequestObjectResult("Cannot return less then 1 and more than 1000 points");
 
             var listOfpoints = new List<Point>();
 
@@ -75,7 +75,8 @@ namespace rondomness
         }
     }
 
-    public class Point  {
+    public class Point
+    {
         public double x { get; set; }
         public double y { get; set; }
     }
