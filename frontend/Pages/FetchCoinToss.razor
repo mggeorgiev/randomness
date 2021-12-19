@@ -9,7 +9,7 @@
 
 <PageTitle>Weather forecast</PageTitle>
 
-<h1>Coin tosses</h1>
+<h1>Coin flips</h1>
 
 <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -20,16 +20,16 @@
 
 <div class="input-group mb-3">
       <div class="input-group-prepend">
-        <span class="input-group-text"># of groups</span>
+        <span class="input-group-text"># of flips per group</span>
       </div>
-    <input type="number" class="form-control" placeholder="# of tosses per group" @bind="@tosses" />
+    <input type="number" class="form-control" placeholder="# of flips per group" @bind="@flips" />
 </div>
 <div class="input-group mb-3">
 
     <button @onclick="GetRequest" class="btn btn-primary">Get Data</button>
 </div>
 
-@if (coinTosses == null)
+@if (coinFlips == null)
 {
     if(DataIsRequested)
     {
@@ -41,14 +41,14 @@ else
     <table class="table table-striped">
         <thead>
             <tr>
-                @for (var col = 1; col <= tosses; col++)
+                @for (var col = 1; col <= flips; col++)
                 {
                     <th>@col</th>
                 }
             </tr>
         </thead>
         <tbody>
-            @foreach (var group in coinTosses.Data)
+            @foreach (var group in coinFlips.Data)
             {
                 <tr>
                     @foreach(var item in group)
@@ -64,14 +64,14 @@ else
 @code {
     private bool DataIsRequested; 
     private int groups = 8;
-    private int tosses = 16;
+    private int flips = 16;
     private string? responseBody;
-    private RootObject? coinTosses;
+    private RootObject? coinFlips;
 
     private class RootObject
     {
         public int NumberOfGroups { get; set; }
-        public int TossesPerGroup { get; set; }
+        public int FlipsPerGroup { get; set; }
         public List<List<string>> Data { get; set; }
     }
 
@@ -80,15 +80,17 @@ else
         DataIsRequested = true;
         try	
         {
-            HttpResponseMessage response = await Http.GetAsync("http://localhost:32747/api/coins");
+            string url = "http://localhost:32747/api/coins?groups=" + groups.ToString() + "&flips="+flips.ToString();
+
+            HttpResponseMessage response = await Http.GetAsync(url);
             response.EnsureSuccessStatusCode();
             responseBody = await response.Content.ReadAsStringAsync();
-            coinTosses = await response.Content.ReadFromJsonAsync<RootObject>();
+            coinFlips = await response.Content.ReadFromJsonAsync<RootObject>();
 
-            if(coinTosses != null)
+            if(coinFlips != null)
             {
-                groups = coinTosses.NumberOfGroups;
-                tosses = coinTosses.TossesPerGroup;
+                groups = coinFlips.NumberOfGroups;
+                flips = coinFlips.FlipsPerGroup;
             }
             DataIsRequested = false;
         }
@@ -98,6 +100,4 @@ else
             Console.WriteLine("Message :{0} ",e.Message);
         }
     }
-
-
 }

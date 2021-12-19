@@ -27,8 +27,8 @@ namespace coins
         [FunctionName("coins")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiParameter(name: "throws", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Throw** parameter.")]
-        [OpenApiParameter(name: "groups", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Groups** parameter. How many sets of throws to be returned.")]
+        [OpenApiParameter(name: "flips", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **flips** parameter. How many coin flips per group.")]
+        [OpenApiParameter(name: "groups", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **groups** parameter. How many sets of flips to be returned.")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(RootObject), Description = "The OK response")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "text/plain", bodyType: typeof(string), Description = "The 400 response")]
         public async Task<IActionResult> Run(
@@ -38,33 +38,33 @@ namespace coins
 
             //var datas = new ResultData();
 
-            string throws = req.Query["throws"];
+            string flips = req.Query["flips"];
             string groups = req.Query["groups"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            throws = throws ?? data?.throws;
+            flips = flips ?? data?.flips;
             groups = groups ?? data?.groups;
 
-            int tossToDeliver = 16;
+            int flipsToDeliver = 16;
 
-            if (throws != null)
-                tossToDeliver = Convert.ToInt32(throws);
-            if (tossToDeliver > 100)
-                return new BadRequestObjectResult("Cannot return more than 100 coin throws.");
+            if (flips != null)
+                flipsToDeliver = Convert.ToInt32(flips);
+            if (flipsToDeliver > 100)
+                return new BadRequestObjectResult("Cannot return more than 100 coin flips.");
 
             int groupsToDeliver = 8;
             if (groups != null)
-                groupsToDeliver = Convert.ToInt32(throws);
+                groupsToDeliver = Convert.ToInt32(groups);
             if (groupsToDeliver > 100 && groupsToDeliver < 1)
-                return new BadRequestObjectResult("Cannot return less then 1 and more than 100 groups of throws.");
+                return new BadRequestObjectResult("Cannot return less then 1 and more than 100 groups of flips.");
 
-            var listofListOfThrows = new List<List<string>>();
+            var listOfListOfFips = new List<List<string>>();
 
             for (int n = 0; n < groupsToDeliver; n++)
             { 
-                var listOfThrows = new List<string>();
-                for (int i = 0; i < tossToDeliver; i++)
+                var listOfFips = new List<string>();
+                for (int i = 0; i < flipsToDeliver; i++)
                 {
                     Random r = new Random();
                     var tossCoin = r.NextDouble();
@@ -72,21 +72,21 @@ namespace coins
 
                     if (tossCoin > 0.5) result = "H";
 
-                    listOfThrows.Add(result);
+                    listOfFips.Add(result);
                     //datas.Add(result);
                 }
-                listofListOfThrows.Add(listOfThrows);
-                //listOfThrows.Clear();
+                listOfListOfFips.Add(listOfFips);
+                //listOfFips.Clear();
             }
 
-            string defaultResponseMessage = string.IsNullOrEmpty(throws)
+            string defaultResponseMessage = string.IsNullOrEmpty(flips)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, toy requested a sequence of {throws}. This HTTP triggered function executed successfully.";
+                : $"Hello, toy requested a sequence of {flips}. This HTTP triggered function executed successfully.";
 
             var rb = new RootObject();
-            rb.TossesPerGroup = tossToDeliver;
+            rb.FlipsPerGroup = flipsToDeliver;
             rb.NumberOfGroups = groupsToDeliver;
-            rb.Data = listofListOfThrows;
+            rb.Data = listOfListOfFips;
             string responseMessage = JsonConvert.SerializeObject(rb, Formatting.Indented);
 
             return new OkObjectResult(responseMessage);
@@ -96,7 +96,7 @@ namespace coins
     public class RootObject
     {
         public int NumberOfGroups { get; set; }
-        public int TossesPerGroup { get; set; }
+        public int FlipsPerGroup { get; set; }
         public List<List<string>> Data { get; set; }
     }
 }
