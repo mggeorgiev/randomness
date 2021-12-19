@@ -11,10 +11,23 @@
 
 <h1>Coin tosses</h1>
 
-<button @onclick="GetRequest" class="btn btn-primary">Get Data</button>
+<div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text"># of groups</span>
+      </div>
+    <input type="number" class="form-control" placeholder="# of groups" @bind="@groups" />
+</div>
 
-@*<input type="number" class="form-control" placeholder="# of groups" @bind="@apartment.AppartmentNumber" />
-<input type="number" class="form-control" placeholder="# of tosses per group" @bind="@apartment.AppartmentNumber" />*@
+<div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text"># of groups</span>
+      </div>
+    <input type="number" class="form-control" placeholder="# of tosses per group" @bind="@tosses" />
+</div>
+<div class="input-group mb-3">
+
+    <button @onclick="GetRequest" class="btn btn-primary">Get Data</button>
+</div>
 
 @if (coinTosses == null)
 {
