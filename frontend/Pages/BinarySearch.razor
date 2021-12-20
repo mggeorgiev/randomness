@@ -1,0 +1,117 @@
+﻿@page "/binary-search"
+@inject HttpClient Http
+@*@inject IAccessTokenProvider TokenProvider*@
+@inject IConfiguration Configuration
+@using System.Net.Http
+@using System.Net.Http.Headers
+@using System.Net.Http.Json
+@using System.Text.Json
+@using Microsoft.Extensions.Configuration
+@*@using Microsoft.AspNetCore.Components.WebAssembly.Authentication*@
+
+<PageTitle>Microsoft tree search</PageTitle>
+
+<h1>Find a random number in a series betrween 1 and 100.</h1>
+
+<p><a href="https://www.youtube.com/watch?v=svCYbkS0Sjk">source</a>. Input the number in the field below and press <b>Guess</b>. The resulst could be:</p>
+
+<ul>
+    <li>Win - when you guessed correctly </li>
+    <li>Up</li>
+    <li>Down</li>
+</ul>
+
+<div class="input-group mb-3"> 
+    <div class="input-group-prepend">
+        <span class="input-group-text">#</span>
+    </div>
+    <input type="number" class="form-control" placeholder="#" @bind="@guess" />
+
+    <button @onclick="Guess" class="btn btn-primary">Guess</button> <button @onclick="Resset" class="btn btn-secondary">New</button>
+</div>
+
+<div>
+    <p>
+        <label>Result: @result</label>
+    </p>
+    <p>
+        <label># of tries: @count</label>
+    </p>
+
+    @if (count > 0)
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    @for (var col = 1; col <= count; col++)
+                    {
+                        <th>@col</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    @for (var col = 0; col < count; col++)
+                    {
+                        <td>@guesses[col]</td>
+                    }
+                </tr>
+            </tbody>
+        </table>
+    }
+</div>
+
+
+
+
+@code {
+    private int count = 0;
+    private int target;
+    private int guess;
+    private int[] guesses = new int[100];
+    string? result;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Run(() =>
+        {
+            Random r = new Random();
+            target = r.Next(1, 100);        
+        });
+    }
+
+    private int GetCount() => ++count;
+
+    private async Task Guess()
+    {
+        await Task.Run(() =>
+        {
+            guesses[count] = guess;
+
+            if (guess == target)
+                result = "win";
+            if (guess > target)
+                result = "go down";
+            if (guess < target)
+                result = "go up";
+            count++;        
+        });
+    }
+
+    private async Task Resset()
+    {
+        await Task.Run(() =>
+        {
+            Random r = new Random();
+            target = r.Next(1, 100);
+            for (int i = 0; i < count; i++)
+            {
+                guesses[i] = 0;
+            }
+            count = 0;        
+        });
+
+    }
+}
