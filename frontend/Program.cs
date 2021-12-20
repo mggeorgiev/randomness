@@ -21,4 +21,9 @@ using var stream = await response.Content.ReadAsStreamAsync();
 
 builder.Configuration.AddJsonStream(stream);
 
+using var response_points = await http.GetAsync("points.json");
+using var stream_points = await response.Content.ReadAsStreamAsync();
+
+builder.Configuration.AddJsonStream(stream_points);
+
 await builder.Build().RunAsync();
