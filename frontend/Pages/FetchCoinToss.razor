@@ -1,10 +1,12 @@
 ﻿@page "/fetchtoss"
 @inject HttpClient Http
 @*@inject IAccessTokenProvider TokenProvider*@
+@inject IConfiguration Configuration
 @using System.Net.Http
 @using System.Net.Http.Headers
 @using System.Net.Http.Json
 @using System.Text.Json
+@using Microsoft.Extensions.Configuration
 @*@using Microsoft.AspNetCore.Components.WebAssembly.Authentication*@
 
 <PageTitle>Weather forecast</PageTitle>
@@ -41,6 +43,7 @@ else
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>#</th>
                 @for (var col = 1; col <= flips; col++)
                 {
                     <th>@col</th>
@@ -51,6 +54,7 @@ else
             @foreach (var group in coinFlips.Data)
             {
                 <tr>
+                    <td>@GetCount()</td>
                     @foreach(var item in group)
                     {
                         <td>@item</td>
@@ -58,10 +62,12 @@ else
                 </tr>
             }
         </tbody>
+        @*@RessetCount()*@
     </table>
 }
 
 @code {
+    private int count=0;
     private bool DataIsRequested; 
     private int groups = 8;
     private int flips = 16;
@@ -75,12 +81,24 @@ else
         public List<List<string>> Data { get; set; }
     }
 
+    private int GetCount()
+    {
+        if (count >= groups)
+            count = 0;
+        return ++count;
+    }
+    private int RessetCount() => count=0;
+
     private async Task GetRequest()
     {
+        count = 0;
         DataIsRequested = true;
         try	
         {
-            string url = "http://localhost:32747/api/coins?groups=" + groups.ToString() + "&flips="+flips.ToString();
+            //var baseURL = "http://localhost:7071/api/coins";
+            var baseURL = Configuration.GetSection("CoinsFunctionAddress").Value;
+
+            string url = baseURL + "?groups=" + groups.ToString() + "&flips="+flips.ToString();
 
             HttpResponseMessage response = await Http.GetAsync(url);
             response.EnsureSuccessStatusCode();
