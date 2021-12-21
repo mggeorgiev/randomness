@@ -1,0 +1,4 @@
+{
+  "CoinsFunctionAddress": "http://localhost:32747/api/coins",
+  "PointsFunctionAddress": "http://localhost:30763/api/points"
+}
