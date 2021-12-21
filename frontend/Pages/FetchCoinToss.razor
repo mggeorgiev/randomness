@@ -97,7 +97,7 @@ else
             //var baseURL = "http://localhost:7071/api/coins";
             var baseURL = Configuration.GetSection("CoinsFunctionAddress").Value;
 
-            string url = baseURL + "?groups=" + groups.ToString() + "&flips="+flips.ToString();
+            string url = baseURL + "groups=" + groups.ToString() + "&flips="+flips.ToString();
 
             HttpResponseMessage response = await Http.GetAsync(url);
             response.EnsureSuccessStatusCode();

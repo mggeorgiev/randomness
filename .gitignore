@@ -362,3 +362,8 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /coins/Properties/ServiceDependencies/coinflips129834589798123 - Zip Deploy
+/rondomness/Properties
+/coins/Properties/serviceDependencies.afn-random-coins20211221125933 - Zip Deploy.json
+/coins/Properties/ServiceDependencies/afn-random-coins20211221125933 - Zip Deploy/storage1.arm.json
+/coins/Properties/ServiceDependencies/afn-random-coins20211221125933 - Zip Deploy/profile.arm.json
+/coins/Properties/ServiceDependencies/afn-random-coins20211221125933 - Zip Deploy/profile.arm.json

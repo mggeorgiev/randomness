@@ -81,7 +81,7 @@
 
             var baseURL = Configuration.GetSection("PointsFunctionAddress").Value;
 
-            string url = baseURL+ "?points=" + PointsCount.ToString();
+            string url = baseURL+ "points=" + PointsCount.ToString();
 
             HttpResponseMessage response = await Http.GetAsync(url);
             response.EnsureSuccessStatusCode();
