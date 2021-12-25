@@ -1,0 +1,57 @@
+﻿@page "/deck-cards"
+@inject HttpClient Http
+@*@inject IAccessTokenProvider TokenProvider*@
+@inject IConfiguration Configuration
+@using System.Net.Http
+@using System.Net.Http.Headers
+@using System.Net.Http.Json
+@using System.Text.Json
+@using Microsoft.Extensions.Configuration
+@*@using Microsoft.AspNetCore.Components.WebAssembly.Authentication*@
+
+<PageTitle>Deck of cards</PageTitle>
+
+<h1>Assume equal odds. Guess?</h1>
+
+<div class="row">
+    A mathematician emerges from a cave and hands you a random ordering of cards in a standard 52-card deck.<br />
+    He then says, "No human has ever held the exact same card arrangement. True or false?"
+</div>
+
+<div class="row">
+    <div class="input-group mb-3"> 
+        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" @onclick="async () => await Answer(true)">
+          <label class="btn btn-outline-primary" for="btnradio1">True</label>
+
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" @onclick="async () => await Answer(false)">
+          <label class="btn btn-outline-primary" for="btnradio2">False</label>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    @if(answered)
+    {
+        <label>@result</label>
+    }
+</div>
+
+<div class="row">
+    <a href="https://twitter.com/nntaleb/status/1473381519980912649">Source</a>
+</div>
+
+
+@code {
+    private string? result;
+    private bool answered;
+
+    private async Task Answer(bool option)
+    {
+        await Task.Run(() =>
+        {
+            result = "There are 52! (8.0658e67) combinations with 52 cards. You decide if this is true or false.";
+            answered = true;
+        });
+    }
+}
