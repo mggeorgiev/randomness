@@ -1,0 +1,120 @@
+﻿@page "/socks"
+@inject HttpClient Http
+@*@inject IAccessTokenProvider TokenProvider*@
+@inject IConfiguration Configuration
+@using System.Net.Http
+@using System.Net.Http.Headers
+@using System.Net.Http.Json
+@using System.Text.Json
+@using Microsoft.Extensions.Configuration
+@*@using Microsoft.AspNetCore.Components.WebAssembly.Authentication*@
+
+<PageTitle>Match Socks in pairs</PageTitle>
+
+<h1>World of Engineering Quiz:</h1>
+
+<p>You have 14 brown socks, 14 blue socks and 14 black socks in your sock drawer. How many socks must you remove (without looking to be sure) to have a matched pair?</p>
+<p><a href="https://twitter.com/engineers_feed/status/1482421934008717312" target="_blank">source</a></p>
+
+
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text"># of socks</span>
+    </div>
+    <input type="number" class="form-control" placeholder="# of groups" @bind="@groups" />
+</div>
+
+<div class="input-group mb-3">
+    <button @onclick="async () => await GetSock()" class="btn btn-primary">Get Data</button>
+    @if (socks.Count > 0)
+    {
+        <button @onclick="async () => await Reset()" class="btn btn-secondary">Reset</button>
+    }
+</div>
+
+<div>
+    <p>
+        <label># of tries: @socks.Count</label>
+    </p>
+
+    @if (socks.Count > 0)
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>sock</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < socks.Count; i++)
+                {
+                    <tr>
+                        <td>@(i+1)</td>
+                        <td>@socks[i]</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @if (exists == true)
+        {
+            <p>Match!</p>
+        }
+    }
+</div>
+
+
+@code {
+    private int groups;
+    private string sock;
+    private List<string> socks = new List<string>();
+    private bool exists;
+
+
+    private async Task GetSock()
+    {
+        await Task.Run(() =>
+        {
+            if (exists == true)
+            {
+                socks.Clear();
+                exists = false;
+            }
+            else
+            {
+
+                Random r = new Random();
+
+                int draw = r.Next(1, 4);
+
+                switch (draw)
+                {
+                    case 1:
+                        sock = "brown";
+                        break;
+                    case 2:
+                        sock = "blue";
+                        break;
+                    case 3:
+                        sock = "black";
+                        break;
+                }
+
+                socks.Add(sock);
+                List<string> countSocks = new List<string>();
+                countSocks = socks.Where(s => s == sock).ToList();
+                if (countSocks.Count > 1)
+                    exists = true;
+            }
+        });
+    }
+
+    private async Task Reset()
+    {
+        await Task.Run(() =>
+        {
+            socks.Clear();
+            exists = false;
+        });
+    }
+}
