@@ -11,7 +11,7 @@ variables:
   azureSubscription: 'corp-fujitsu-multicloud-lu-masd-001'
 
   # Function app name
-  functionAppName: 'fnc-afnrndcoins-eus1-p-w-701'
+  functionAppName: 'fnc-afncoins-eus1-p-w-701'
 
   # Agent VM image name
   vmImageName: 'windows-2019'
