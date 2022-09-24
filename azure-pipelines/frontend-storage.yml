@@ -3,12 +3,23 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/dotnet-core
 
-trigger:
-- master
+trigger: 
+  branches:
+      include:
+      - master
+  paths:
+    include:
+    - frontend/ 
+
+parameters:
+- name: AZURE_STORAGE_KEY
+  type: string
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: 'corp-fujitsu-multicloud-lu-masd-001'
+  AZURE_STORAGE_ACCOUNT: 'randomtsteus1pba279f16'
+  container: '$web'
 
   # Web app name
   webAppName: 'app-randomweb-eus1-p-701'
@@ -33,6 +44,7 @@ stages:
     - task: UseDotNet@2
       inputs:
         version: '6.0.x'
+
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
@@ -41,17 +53,16 @@ stages:
           $(workingDirectory)/*.csproj
         arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
 
-    - task: ArchiveFiles@2
-      displayName: 'Archive files'
+    # Publish projects to specified folder.
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet publish'
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
-        includeRootFolder: false
-        archiveType: zip
-        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-        replaceExistingArchive: true
-
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-      artifact: drop
+        command: 'publish'
+        publishWebProjects: false
+        projects: '$(workingDirectory)/*.csproj'
+        arguments: '--output $(Build.ArtifactStagingDirectory)/app/publish --configuration Release'
+        zipAfterPublish: false
+        modifyOutputPath: true
 
 - stage: Deploy
   displayName: Deploy stage
@@ -69,11 +80,29 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: AzureFileCopy@4
-            displayName: 'Azure storage static deploy'
+          # - task: AzureFileCopy@4
+          #   displayName: 'Azure storage static deploy'
+          #   inputs:
+          #     SourcePath: '$(System.DefaultWorkingDirectory)/publish_output'
+          #     azureSubscription: '$(azureSubscription)'
+          #     Destination: 'AzureBlob'
+          #     storage: 'randomtsteus1pba279f16'
+          #     ContainerName: '$web'
+          - task: AzureCLI@2
+            displayName: Azure CLI
             inputs:
-              SourcePath: '$(System.DefaultWorkingDirectory)/publish_output'
               azureSubscription: '$(azureSubscription)'
-              Destination: 'AzureBlob'
-              storage: 'randomtsteus1pba279f16'
-              ContainerName: '$Web'
+              scriptType: ps
+              scriptLocation: inlineScript
+              inlineScript: |
+                az --version
+                az account show
+
+          - task: AzureCLI@2
+            displayName: Purge files from the storage container
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              scriptType: 'ps'
+              scriptLocation: 'inlineScript'
+              arguments: '$(AZURE_STORAGE_ACCOUNT) $(parameters.AZURE_STORAGE_KEY) $(container)'
+              inlineScript: 'az storage blob delete-batch --account-name $1 --account-key $2 -s $3'
