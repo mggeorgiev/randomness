@@ -5,6 +5,9 @@
 
 trigger:
 - master
+paths:
+  include:
+  - frontend
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
