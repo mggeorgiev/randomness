@@ -104,5 +104,5 @@ stages:
               azureSubscription: '$(azureSubscription)'
               scriptType: 'ps'
               scriptLocation: 'inlineScript'
-              arguments: '$(AZURE_STORAGE_ACCOUNT) $(parameters.AZURE_STORAGE_KEY) $(container)'
+              arguments: '$(AZURE_STORAGE_ACCOUNT) ${{ parameters.AZURE_STORAGE_KEY }} $(container)'
               inlineScript: 'az storage blob delete-batch --account-name $1 --account-key $2 -s $3'
