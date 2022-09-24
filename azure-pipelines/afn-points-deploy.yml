@@ -11,13 +11,13 @@ variables:
   azureSubscription: 'aa2ec0d4-8bee-48a4-bb4d-7c7350893c4a'
 
   # Function app name
-  functionAppName: 'fnc-afnrndcoins-eus1-p-w-701'
+  functionAppName: 'fnc-afnrndpoints-eus1-p-w-701'
 
   # Agent VM image name
   vmImageName: 'windows-2019'
 
   # Working Directory
-  workingDirectory: '$(System.DefaultWorkingDirectory)/coins'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/rondomness'
 
 stages:
 - stage: Build
