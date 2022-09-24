@@ -8,7 +8,7 @@ trigger:
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: 'aa2ec0d4-8bee-48a4-bb4d-7c7350893c4a'
+  azureSubscription: 'corp-fujitsu-multicloud-lu-masd-001'
 
   # Function app name
   functionAppName: 'fnc-afnrndcoins-eus1-p-w-701'
