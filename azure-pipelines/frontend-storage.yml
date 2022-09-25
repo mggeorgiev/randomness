@@ -71,6 +71,12 @@ stages:
         zipAfterPublish: false
         modifyOutputPath: true
 
+    - task: FileTransform@1
+      inputs:
+        folderPath: '$(Build.ArtifactStagingDirectory)\app\publish\frontend\wwwroot\'
+        fileType: 'json'
+        targetFiles: 'functions_config.json'
+
     - task: AzureCLI@2
       displayName: Purge files from the $(container) storage container
       inputs:
