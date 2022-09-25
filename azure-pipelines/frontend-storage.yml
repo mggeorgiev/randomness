@@ -11,13 +11,13 @@ trigger:
     include:
     - frontend/ 
 
-parameters:
-- name: AZURE_STORAGE_KEY
-  type: string
+# parameters:
+# - name: AZURE_STORAGE_KEY
+#   type: string
 
 variables:
-  - group: my-variable-group
-    
+  - group: mb
+    name: AZURE_STORAGE_KEY
     # Azure Resource Manager connection created during pipeline creation
     azureSubscription: 'corp-fujitsu-multicloud-lu-masd-001'
     AZURE_STORAGE_ACCOUNT: 'randomtsteus1pba279f16'
