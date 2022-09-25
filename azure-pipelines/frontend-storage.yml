@@ -119,8 +119,9 @@ stages:
               azureSubscription: '$(azureSubscription)'
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
+              arguments: '$(AZURE_STORAGE_ACCOUNT) $(AZURE_STORAGE_KEY) $(container)'
               inlineScript: |
-                az storage blob delete-batch --account-name $AZURE_STORAGE_ACCOUNT --account-key $AZURE_STORAGE_KEY -s $container
+                az storage blob delete-batch --account-name $1 --account-key $2 -s $3
 
           - task: AzureCLI@2
             displayName: Purge files from the storage container
