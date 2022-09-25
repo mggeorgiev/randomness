@@ -17,7 +17,7 @@ trigger:
 
 variables:
   - group: mb
-    name: AZURE_STORAGE_KEY
+  - name: AZURE_STORAGE_KEY
     # Azure Resource Manager connection created during pipeline creation
     azureSubscription: 'corp-fujitsu-multicloud-lu-masd-001'
     AZURE_STORAGE_ACCOUNT: 'randomtsteus1pba279f16'
