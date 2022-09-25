@@ -32,7 +32,7 @@ variables:
 
 stages:
 - stage: Build
-  displayName: Build stage
+  displayName: Build and Deploy stage
 
   jobs:
   - job: Build
@@ -71,47 +71,22 @@ stages:
         zipAfterPublish: false
         modifyOutputPath: true
 
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn: Build
-  condition: succeeded()
+    - task: AzureCLI@2
+      displayName: Purge files from the $(container) storage container
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        arguments: '$(AZURE_STORAGE_ACCOUNT) $(AZURE_STORAGE_KEY) $(container)'
+        inlineScript: |
+          az storage blob delete-batch --account-name $1 --account-key $2 -s $3
 
-  jobs:
-  - deployment: Deploy
-    displayName: Deploy
-    environment: 'development'
-    pool:
-      vmImage: $(vmImageName)
-
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          # - task: AzureFileCopy@4
-          #   displayName: 'Azure storage static deploy'
-          #   inputs:
-          #     SourcePath: '$(System.DefaultWorkingDirectory)/publish_output'
-          #     azureSubscription: '$(azureSubscription)'
-          #     Destination: 'AzureBlob'
-          #     storage: 'randomtsteus1pba279f16'
-          #     ContainerName: '$web'
-
-          - task: AzureCLI@2
-            displayName: Purge files from the $(container) storage container
-            inputs:
-              azureSubscription: '$(azureSubscription)'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              arguments: '$(AZURE_STORAGE_ACCOUNT) $(AZURE_STORAGE_KEY) $(container)'
-              inlineScript: |
-                az storage blob delete-batch --account-name $1 --account-key $2 -s $3
-
-          - task: AzureCLI@2
-            displayName: Upload to blob storage
-            inputs:
-              azureSubscription: '$(azureSubscription)'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              arguments: '$(AZURE_STORAGE_ACCOUNT) $(AZURE_STORAGE_KEY) $(container) $(Build.ArtifactStagingDirectory)\app\publish\frontend\wwwroot\'
-              inlineScript: |
-                az storage blob upload-batch --account-name $1 -s $4 -d '$web' --account-key $2
+    - task: AzureCLI@2
+      displayName: Upload to blob storage
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        arguments: '$(AZURE_STORAGE_ACCOUNT) $(AZURE_STORAGE_KEY) $(container) $(Build.ArtifactStagingDirectory)\app\publish\frontend\wwwroot\'
+        inlineScript: |
+          az storage blob upload-batch --account-name $1 -s $4 -d '$web' --account-key $2
