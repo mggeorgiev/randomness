@@ -87,9 +87,9 @@ stages:
         azureSubscription: '$(azureSubscription)'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
-        arguments: '$(AZURE_STORAGE_ACCOUNT) $(AZURE_STORAGE_KEY) $(container) $(Build.ArtifactStagingDirectory)\app\publish'
+        arguments: '$(AZURE_STORAGE_ACCOUNT) $(AZURE_STORAGE_KEY) $(container) $(Build.ArtifactStagingDirectory)\app\publish\wwwroot\'
         inlineScript: |
-          az storage blob upload-batch --account-name $1 -s $4\wwwroot\ -d '$web' --account-key $2
+          az storage blob upload-batch --account-name $1 -s $4 -d '$web' --account-key $2
 
 - stage: Deploy
   displayName: Deploy stage
