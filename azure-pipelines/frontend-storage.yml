@@ -41,6 +41,12 @@ stages:
       vmImage: $(vmImageName)
 
     steps:
+    # - task: AzureKeyVault@1
+    #   inputs:
+    #     azureSubscription: '$(azureSubscription)'            ## YOUR_SERVICE_CONNECTION_NAME
+    #     KeyVaultName: 'kvt-bloodPreassure-002'               ## YOUR_KEY_VAULT_NAME
+    #     SecretsFilter: 'AZURE_STORAGE_KEY'                   ## YOUR_SECRET_NAME. Default value: *
+    #     RunAsPreJob: false 
     - task: UseDotNet@2
       inputs:
         version: '6.0.x'
@@ -104,5 +110,5 @@ stages:
               azureSubscription: '$(azureSubscription)'
               scriptType: 'ps'
               scriptLocation: 'inlineScript'
-              arguments: '$(AZURE_STORAGE_ACCOUNT) ${{ parameters.AZURE_STORAGE_KEY }} $(container)'
+              arguments: '$(AZURE_STORAGE_ACCOUNT) $(AZURE_STORAGE_KEY) $(container)'
               inlineScript: 'az storage blob delete-batch --account-name $1 --account-key $2 -s $3'
