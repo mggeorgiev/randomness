@@ -18,7 +18,6 @@ trigger:
 variables:
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: 'corp-fujitsu-multicloud-lu-masd-001'
-  AZURE_STORAGE_ACCOUNT: 'randomtsteus1pba279f16'
   container: '$web'
 
   # Web app name
