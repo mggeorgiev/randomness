@@ -16,21 +16,19 @@ trigger:
 #   type: string
 
 variables:
-  - group: mb
-  - name: AZURE_STORAGE_KEY
-    # Azure Resource Manager connection created during pipeline creation
-    azureSubscription: 'corp-fujitsu-multicloud-lu-masd-001'
-    AZURE_STORAGE_ACCOUNT: 'randomtsteus1pba279f16'
-    container: '$web'
+  # Azure Resource Manager connection created during pipeline creation
+  azureSubscription: 'corp-fujitsu-multicloud-lu-masd-001'
+  AZURE_STORAGE_ACCOUNT: 'randomtsteus1pba279f16'
+  container: '$web'
 
-    # Web app name
-    webAppName: 'app-randomweb-eus1-p-701'
+  # Web app name
+  webAppName: 'app-randomweb-eus1-p-701'
 
-    # Agent VM image name
-    vmImageName: 'windows-2019'
+  # Agent VM image name
+  vmImageName: 'windows-2019'
 
-    # Working Directory
-    workingDirectory: '$(System.DefaultWorkingDirectory)/frontend'
+  # Working Directory
+  workingDirectory: '$(System.DefaultWorkingDirectory)/frontend'
 
 stages:
 - stage: Build
