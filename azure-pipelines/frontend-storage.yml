@@ -11,6 +11,7 @@ trigger:
     include:
     - frontend/ 
 
+## yeah, yeah, next time in a keyvault
 parameters:
 - name: AZURE_STORAGE_KEY
   type: string
