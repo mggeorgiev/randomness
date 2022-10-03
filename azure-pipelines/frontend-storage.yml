@@ -11,15 +11,13 @@ trigger:
     include:
     - frontend/ 
 
-## yeah, yeah, next time in a keyvault
-parameters:
-- name: AZURE_STORAGE_KEY
-  type: string
+# parameters:
+# - name: AZURE_STORAGE_KEY
+#   type: string
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: 'corp-fujitsu-multicloud-lu-masd-001'
-  AZURE_STORAGE_ACCOUNT: 'randomtsteus1pba279f16'
   container: '$web'
 
   # Web app name
@@ -33,7 +31,7 @@ variables:
 
 stages:
 - stage: Build
-  displayName: Build stage
+  displayName: Build and Deploy stage
 
   jobs:
   - job: Build
@@ -42,12 +40,19 @@ stages:
       vmImage: $(vmImageName)
 
     steps:
+    # - task: AzureKeyVault@1
+    #   inputs:
+    #     azureSubscription: '$(azureSubscription)'            ## YOUR_SERVICE_CONNECTION_NAME
+    #     KeyVaultName: 'kvt-bloodPreassure-002'               ## YOUR_KEY_VAULT_NAME
+    #     SecretsFilter: 'AZURE_STORAGE_KEY'                   ## YOUR_SECRET_NAME. Default value: *
+    #     RunAsPreJob: false 
     - task: UseDotNet@2
+      displayName: 'Install dotnet 6.0.x'    
       inputs:
         version: '6.0.x'
 
     - task: DotNetCoreCLI@2
-      displayName: Build
+      displayName: 'Build (dotnet build)'
       inputs:
         command: 'build'
         projects: |
@@ -56,7 +61,7 @@ stages:
 
     # Publish projects to specified folder.
     - task: DotNetCoreCLI@2
-      displayName: 'dotnet publish'
+      displayName: 'Publish (dotnet publish)'
       inputs:
         command: 'publish'
         publishWebProjects: false
@@ -65,45 +70,28 @@ stages:
         zipAfterPublish: false
         modifyOutputPath: true
 
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn: Build
-  condition: succeeded()
+    - task: FileTransform@1
+      inputs:
+        folderPath: '$(Build.ArtifactStagingDirectory)\app\publish\frontend\wwwroot\'
+        fileType: 'json'
+        targetFiles: 'functions_config.json'
 
-  jobs:
-  - deployment: Deploy
-    displayName: Deploy
-    environment: 'development'
-    pool:
-      vmImage: $(vmImageName)
+    - task: AzureCLI@2
+      displayName: Purge files from the $(container) storage container
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        arguments: '$(AZURE_STORAGE_ACCOUNT) $(AZURE_STORAGE_KEY) $(container)'
+        inlineScript: |
+          az storage blob delete-batch --account-name $1 --account-key $2 -s $3
 
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          # - task: AzureFileCopy@4
-          #   displayName: 'Azure storage static deploy'
-          #   inputs:
-          #     SourcePath: '$(System.DefaultWorkingDirectory)/publish_output'
-          #     azureSubscription: '$(azureSubscription)'
-          #     Destination: 'AzureBlob'
-          #     storage: 'randomtsteus1pba279f16'
-          #     ContainerName: '$web'
-          - task: AzureCLI@2
-            displayName: Azure CLI
-            inputs:
-              azureSubscription: '$(azureSubscription)'
-              scriptType: ps
-              scriptLocation: inlineScript
-              inlineScript: |
-                az --version
-                az account show
-
-          - task: AzureCLI@2
-            displayName: Purge files from the storage container
-            inputs:
-              azureSubscription: '$(azureSubscription)'
-              scriptType: 'ps'
-              scriptLocation: 'inlineScript'
-              arguments: '$(AZURE_STORAGE_ACCOUNT) ${{ parameters.AZURE_STORAGE_KEY }} $(container)'
-              inlineScript: 'az storage blob delete-batch --account-name $1 --account-key $2 -s $3'
+    - task: AzureCLI@2
+      displayName: Upload to blob storage
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        arguments: '$(AZURE_STORAGE_ACCOUNT) $(AZURE_STORAGE_KEY) $(container) $(Build.ArtifactStagingDirectory)\app\publish\frontend\wwwroot\'
+        inlineScript: |
+          az storage blob upload-batch --account-name $1 -s $4 -d '$web' --account-key $2
