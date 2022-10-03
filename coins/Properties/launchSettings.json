@@ -1,13 +1,17 @@
 {
   "profiles": {
     "coins": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "host start --port 32747 --cors * --pause-on-error"
     },
     "Docker": {
       "commandName": "Docker",
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "commandLineArgs": "host start --port 32747 --pause-on-error",
       "httpPort": 32747,
       "useSSL": false
     }
   }
 }
+
+  

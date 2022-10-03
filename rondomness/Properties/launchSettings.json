@@ -1,10 +1,12 @@
 {
   "profiles": {
     "rondomness": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "host start --port 30763 --cors * --pause-on-error"
     },
     "Docker": {
       "commandName": "Docker",
+      "commandLineArgs": "host start --port 30763 --pause-on-error",
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "httpPort": 30763,
       "useSSL": false
