@@ -47,7 +47,7 @@ stages:
     #     SecretsFilter: 'AZURE_STORAGE_KEY'                   ## YOUR_SECRET_NAME. Default value: *
     #     RunAsPreJob: false 
     - task: UseDotNet@2
-      displayName: 'Install dotnet 6.0.x'    
+      displayName: 'Install dotnet 7.0.x'    
       inputs:
         version: '7.0.x'
 
