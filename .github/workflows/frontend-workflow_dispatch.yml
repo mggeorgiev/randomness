@@ -1,7 +1,7 @@
 # Controls when the workflow will run
 # https://timheuer.com/blog/deploy-blazor-app-to-azure-using-github-actions/?ref=morioh.com&utm_source=morioh.com
 
-name: Blob storage website CI
+name: Blob storage website CI - manual
 
 on: [workflow_dispatch]
 
