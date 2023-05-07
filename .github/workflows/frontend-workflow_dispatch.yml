@@ -1,0 +1,55 @@
+# Controls when the workflow will run
+# https://timheuer.com/blog/deploy-blazor-app-to-azure-using-github-actions/?ref=morioh.com&utm_source=morioh.com
+
+name: Blob storage website CI
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:            
+    - uses: actions/checkout@v2
+    - uses: azure/login@v1
+      with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1.9.0
+      with:
+        # Optional SDK version(s) to use. If not provided, will install global.json version when available. Examples: 2.2.104, 3.1, 3.1.x
+        dotnet-version: 7.x.x
+
+    - name: Restore dependancies    
+      run: dotnet restore
+
+    - name: Build    
+      run: dotnet build --configuration Release --no-restore
+
+    #  [project_file_folder]/bin/[configuration]/[framework]/publish/
+    - name: Publish    
+      run: dotnet publish --configuration Release --output app/publish
+
+    # Authentication in Azure
+    - name: Authenticate with Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS  }}
+
+    - name: Purge files from the storage container
+      uses: azure/CLI@v1
+      with:
+        azcliversion: latest
+        inlineScript: |
+            az storage blob delete-batch --account-name randomnessfe --account-key ${{ secrets.STORAGE_KEY }} -s '$web'
+    - name: Upload to blob storage
+      uses: azure/CLI@v1
+      with:
+        azcliversion: latest
+        inlineScript: az storage blob upload-batch --account-name randomnessfe -s app/publish/wwwroot/ -d '$web'
+
+  # Azure logout 
+    - name: logout
+      run: |
+            az logout
+      if: always()
