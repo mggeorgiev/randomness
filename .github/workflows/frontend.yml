@@ -48,12 +48,12 @@ jobs:
       with:
         azcliversion: latest
         inlineScript: |
-            az storage blob delete-batch --account-name randomness12381673528134 --account-key ${{ secrets.STORAGE_KEY }} -s '$web'
+            az storage blob delete-batch --account-name randomnessfe --account-key ${{ secrets.STORAGE_KEY }} -s '$web'
     - name: Upload to blob storage
       uses: azure/CLI@v1
       with:
         azcliversion: latest
-        inlineScript: az storage blob upload-batch --account-name randomness12381673528134 -s app/publish/wwwroot/ -d '$web'
+        inlineScript: az storage blob upload-batch --account-name randomnessfe -s app/publish/wwwroot/ -d '$web'
 
   # Azure logout 
     - name: logout
