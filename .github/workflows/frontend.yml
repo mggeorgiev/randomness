@@ -28,7 +28,7 @@ jobs:
         dotnet-version: '8.x.x'
 
     - name: Restore dependancies    
-      run: dotnet restore
+      run: dotnet restore ./frontend/frontend.csproj
 
     - name: Build    
       run: dotnet build --configuration Release --no-restore
