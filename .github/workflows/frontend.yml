@@ -31,11 +31,11 @@ jobs:
       run: dotnet restore ./frontend/frontend.csproj
 
     - name: Build    
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore ./frontend/frontend.csproj
 
     #  [project_file_folder]/bin/[configuration]/[framework]/publish/
     - name: Publish    
-      run: dotnet publish --configuration Release --output app/publish
+      run: dotnet publish --configuration Release --output app/publish ./frontend/frontend.csproj
 
     # Authentication in Azure
     - name: Authenticate with Azure
