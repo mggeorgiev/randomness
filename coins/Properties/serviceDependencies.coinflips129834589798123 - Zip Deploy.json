@@ -4,10 +4,6 @@
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/storageaccountrgfun9e2d",
       "type": "storage.azure",
       "connectionId": "AzureWebJobsStorage"
-    },
-    "apis1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/afn-random-coinsapi/apis/afn-random-coins",
-      "type": "apis.azure"
     }
   }
 }
