@@ -1,4 +1,4 @@
-name: Build and deploy .NET Core application to Function App afn-randomness-001
+name: afn-points-001 Build and deploy .NET Core application to Function App afn-randomness-001
 
 on: [workflow_dispatch]
 
