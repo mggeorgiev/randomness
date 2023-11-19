@@ -1,10 +1,7 @@
 name: Build and deploy .NET Core application to Function App afn-randomness-001
-on:
-  push:
-    branches:
-    - master
-    paths:
-        - rondomness/**
+
+on: [workflow_dispatch]
+
 env:
   AZURE_FUNCTIONAPP_NAME: afn-randomness-001
   AZURE_FUNCTIONAPP_PACKAGE_PATH: rondomness

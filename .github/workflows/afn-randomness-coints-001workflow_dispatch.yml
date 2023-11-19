@@ -1,10 +1,6 @@
 name: Build and deploy .NET Core application to Function App afn-coins-001
-on:
-  push:
-    branches:
-    - master
-    paths:
-        - coins/**
+
+on: [workflow_dispatch]
 
 env:
   AZURE_FUNCTIONAPP_NAME: afn-coins-001
