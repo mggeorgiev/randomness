@@ -1,10 +1,11 @@
-name: Build and deploy .NET Core application to Function App afn-coins-001
+name: afn-coins-001 Build and deploy .NET Core application to Function App
 
 on: [workflow_dispatch]
 
 env:
   AZURE_FUNCTIONAPP_NAME: afn-coins-001
   AZURE_FUNCTIONAPP_PACKAGE_PATH: coins
+  AZURE_FUNCTIONAPP_PUBLISH_PROFILE: AFN_COINS_001
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
   WORKING_DIRECTORY: coins
@@ -41,5 +42,5 @@ jobs:
       uses: Azure/functions-action@v1
       with:
         app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-        publish-profile: ${{ secrets.afn_randomness_001_45D2 }}
+        publish-profile: ${{ secrets.AFN_COINS_001 }}
         package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
