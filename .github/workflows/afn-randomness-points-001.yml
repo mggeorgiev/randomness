@@ -5,7 +5,7 @@ on:
     - master
 env:
   AZURE_FUNCTIONAPP_NAME: afn-randomness-001
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: rondomness/.
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: rondomness
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
   WORKING_DIRECTORY: rondomness
