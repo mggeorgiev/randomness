@@ -89,7 +89,7 @@ namespace UnitTests
         }
 
         [Fact]
-        public async Task Run_WhenCalledWithoutEmptyPoints_ReturnsBadRequest()
+        public async Task Run_WhenCalledWithEmptyPoints_ReturnsBadRequest()
         {
             // Arrange
             var request = new DefaultHttpRequest(new DefaultHttpContext())
