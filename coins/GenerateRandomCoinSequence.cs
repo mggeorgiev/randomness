@@ -15,11 +15,11 @@ using Newtonsoft.Json;
 
 namespace coins
 {
-    public class GenerateRandonCoinSequence
+    public class GenerateRandomCoinSequence
     {
-        private readonly ILogger<GenerateRandonCoinSequence> _logger;
+        private readonly ILogger<GenerateRandomCoinSequence> _logger;
 
-        public GenerateRandonCoinSequence(ILogger<GenerateRandonCoinSequence> log)
+        public GenerateRandomCoinSequence(ILogger<GenerateRandomCoinSequence> log)
         {
             _logger = log;
         }
