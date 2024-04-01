@@ -24,8 +24,8 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th></th>
+                            <th colspan ="2">Piece</th>
+                            <th>Probability</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,6 +34,7 @@
                             <tr>
                                 <td>@pieces[piece, 0]</td>
                                 <td>@pieces[piece, 1]</td>
+                                <td>3.57 %</td>
                             </tr>
                         }
                     </tbody>
@@ -41,7 +42,30 @@
             }
         </div>
         <div class="col-2">
-            <p>@GetPiece()</p>
+            <p>
+                <label>Random Piece: @GetCount()</label>
+            </p>
+            @if (randomPiece.Length > 0)
+            {
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Piece</th>
+                            <th>Probability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var piece = 0; piece < randomPiece.Length / 2; piece++)
+                        {
+                            <tr>
+                                <td>@randomPiece[piece, 0]</td>
+                                <td>@randomPiece[piece, 1]</td>
+                                <td></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
         </div>
     </div>
 </div>
@@ -61,11 +85,14 @@
                             , { 4, 4 }, { 4, 5 }, { 4, 6 }
                             , { 5, 5 }, { 5, 6 }
                             , { 6, 6 }
-                            };
+    };
+
+    private int[,] usedPieces;
 
     private int GetCount() => pieces.Length / 2;
 
     private int[,] randomPiece = new int[1, 2];
+    private double probability = Math.Round(1.0/28.0*100.0,2);
 
     private List<int> GetPiece()
     {
@@ -73,6 +100,9 @@
         Random r = new Random();
         piece.Add(r.Next(0, 6));
         piece.Add(r.Next(0, 6));
+
+        randomPiece[0, 0] = piece.ElementAt(0);
+        randomPiece[0, 1] = piece.ElementAt(1);
 
         return piece;
     }
