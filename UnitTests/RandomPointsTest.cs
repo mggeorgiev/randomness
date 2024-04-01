@@ -6,8 +6,10 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using rondomness;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 //using Moq;
@@ -26,32 +28,105 @@ namespace UnitTests
         }
 
         [Fact]
-        public async Task Run_WithValidPoints_ReturnsOkObjectResult()
+        public async Task Run_WhenCalledWithValidPoints_ReturnsOkObjectResult()
         {
+            // Arrange
             var request = new DefaultHttpRequest(new DefaultHttpContext());
             request.QueryString = new QueryString("?points=10");
+
+            // Act
             var result = await _generateRandomPoints.Run(request);
 
-            Assert.IsType<OkObjectResult>(result);
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(okResult.Value);
+
+            var jsonResponse = okResult.Value as string;
+            Assert.NotNull(jsonResponse);
+
+            var pointsArray = JArray.Parse(jsonResponse);
+            Assert.Equal(10, pointsArray.Count);
         }
 
         [Fact]
-        public async Task Run_WithInvalidPoints_ReturnsBadRequestObjectResult()
+        public async Task Run_WhenCalledWithDefault_ReturnsOkObjectResult()
         {
+            // Arrange
+            var request = new DefaultHttpRequest(new DefaultHttpContext());
+            request.QueryString = new QueryString("?points=10");
+
+            // Act
+            var result = await _generateRandomPoints.Run(request);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(okResult.Value);
+
+            var jsonResponse = okResult.Value as string;
+            Assert.NotNull(jsonResponse);
+
+            var pointsArray = JArray.Parse(jsonResponse);
+            Assert.Equal(10, pointsArray.Count);
+        }
+
+        [Fact]
+        public async Task Run_WhenCalledWithInvalidPoints_ReturnsBadRequest()
+        {
+            // Arrange
             var request = new DefaultHttpRequest(new DefaultHttpContext())
             {
                 Query = new QueryCollection(new Dictionary<string, StringValues>()
                 {
-                    { "flips", "101" }
-        })
+                    { "points", "0" } // Invalid, as it's more than the allowed limit (1000)
+                })
             };
 
-            //{ "groups", "111" }
+            // Act
             var result = await _generateRandomPoints.Run(request);
 
+            // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Cannot return more than 100 coin flips.", (result as BadRequestObjectResult).Value);
+            Assert.Equal("Cannot return less then 1 and more than 1000 points", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task Run_WhenCalledWithoutPoints_ReturnsBadRequest()
+        {
+            // Arrange
+            var request = new DefaultHttpRequest(new DefaultHttpContext())
+            {
+                Query = new QueryCollection(new Dictionary<string, StringValues>()
+                {
+                    //{ "points", "" } // Invalid, as it's more than the allowed limit (1000)
+                })
+            };
+
+            // Act
+            var result = await _generateRandomPoints.Run(request);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Points parameter that scpecifies the number of points is requried. Cannot return less then 1 and more than 1000 points", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task Run_WhenCalledWithoutEmptyPoints_ReturnsBadRequest()
+        {
+            // Arrange
+            var request = new DefaultHttpRequest(new DefaultHttpContext())
+            {
+                Query = new QueryCollection(new Dictionary<string, StringValues>()
+                {
+                    { "points", "" } // Invalid, as it's more than the allowed limit (1000)
+                })
+            };
+
+            // Act
+            var result = await _generateRandomPoints.Run(request);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Points parameter that scpecifies the number of points is requried. Cannot return less then 1 and more than 1000 points", badRequestResult.Value);
         }
     }
 }

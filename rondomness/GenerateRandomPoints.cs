@@ -42,9 +42,12 @@ namespace rondomness
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             points = points ?? data?.points;
 
-            if (points != null)
-                executions = Convert.ToInt32(points);
-            if (executions > 1000 && executions < 1)
+            if (points == null || points == "")
+                return new BadRequestObjectResult("Points parameter that scpecifies the number of points is requried. Cannot return less then 1 and more than 1000 points");
+
+            executions = Convert.ToInt32(points);
+
+            if (executions > 1000 || executions < 1)
                 return new BadRequestObjectResult("Cannot return less then 1 and more than 1000 points");
 
             var listOfpoints = new List<Point>();
