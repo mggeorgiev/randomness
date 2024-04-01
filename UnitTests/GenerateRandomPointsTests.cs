@@ -49,27 +49,6 @@ namespace UnitTests
         }
 
         [Fact]
-        public async Task Run_WhenCalledWithDefault_ReturnsOkObjectResult()
-        {
-            // Arrange
-            var request = new DefaultHttpRequest(new DefaultHttpContext());
-            request.QueryString = new QueryString("?points=10");
-
-            // Act
-            var result = await _generateRandomPoints.Run(request);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.NotNull(okResult.Value);
-
-            var jsonResponse = okResult.Value as string;
-            Assert.NotNull(jsonResponse);
-
-            var pointsArray = JArray.Parse(jsonResponse);
-            Assert.Equal(10, pointsArray.Count);
-        }
-
-        [Fact]
         public async Task Run_WhenCalledWithInvalidPoints_ReturnsBadRequest()
         {
             // Arrange

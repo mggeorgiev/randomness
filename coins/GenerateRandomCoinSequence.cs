@@ -56,7 +56,7 @@ namespace coins
             int groupsToDeliver = 8;
             if (groups != null)
                 groupsToDeliver = Convert.ToInt32(groups);
-            if (groupsToDeliver > 100 && groupsToDeliver < 1)
+            if (groupsToDeliver > 100 || groupsToDeliver < 1)
                 return new BadRequestObjectResult("Cannot return less then 1 and more than 100 groups of flips.");
 
             var listOfListOfFips = new List<List<string>>();
