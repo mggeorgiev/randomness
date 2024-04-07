@@ -27,15 +27,15 @@
     </div>
     <input type="number" class="form-control" placeholder="#" @bind="@guess" />
 
-    <button @onclick="Guess" class="btn btn-primary">Guess</button> <button @onclick="Resset" class="btn btn-secondary">New</button>
+    <button id="Guess" @onclick="Guess" class="btn btn-primary">Guess</button> <button id="New" @onclick="Resset" class="btn btn-secondary">New</button>
 </div>
 
 <div>
     <p>
-        <label>Result: @result</label>
+        <label id="Result">Result: @result</label>
     </p>
     <p>
-        <label># of tries: @count</label>
+        <label id="triesCounter"># of tries: @count</label>
     </p>
 
     @if (count > 0)
@@ -104,13 +104,14 @@
     {
         await Task.Run(() =>
         {
+            result = null;
+            count = 0;
             Random r = new Random();
             target = r.Next(1, 100);
             for (int i = 0; i < count; i++)
             {
                 guesses[i] = 0;
             }
-            count = 0;        
         });
 
     }
