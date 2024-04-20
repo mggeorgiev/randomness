@@ -1,4 +1,6 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject NavigationManager NavigationManager
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Randomness</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -21,32 +23,45 @@
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="fetchpoints">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch clustering data
+                <span class="oi oi-grid-four-up" aria-hidden="true"></span> Fetch clustering data
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="binary-search">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Binary search
+                <span class="oi oi-signpost" aria-hidden="true"></span> Binary search
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="deck-cards">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Cards
+                @if (IsSelected("deck-cards"))
+                {
+                    <span class="oi oi-infinity" aria-hidden="true"></span>
+                }
+                else
+                {
+                    <span class="oi oi-list-rich" aria-hidden="true"></span>
+                }
+                Cards
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="domino">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Domino
+                <span class="oi oi-grid-three-up" aria-hidden="true"></span> Domino
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="socks">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Socks
+                <span class="oi oi-task" aria-hidden="true"></span> Socks
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="secret-code">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Secret code
+                <span class="oi oi-key" aria-hidden="true"></span> Secret code
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="description">
+                <span class="oi oi-project" aria-hidden="true"></span> Project description
             </NavLink>
         </div>
     </nav>
@@ -61,4 +76,9 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    // Method to check if the current page is selected
+    bool IsSelected(string pageName) =>
+        NavigationManager.Uri.Contains(pageName);
+}
 }
