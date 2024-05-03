@@ -1,0 +1,96 @@
+﻿@page "/description"
+@inject HttpClient Http
+@*@inject IAccessTokenProvider TokenProvider*@
+@inject IConfiguration Configuration
+@using System.Net.Http
+@using System.Net.Http.Headers
+@using System.Net.Http.Json
+@using System.Text.Json
+@using Microsoft.Extensions.Configuration
+@*@using Microsoft.AspNetCore.Components.WebAssembly.Authentication*@
+
+<PageTitle>Project description</PageTitle>
+
+<h1>Project description</h1>
+
+<p>
+    This application was deployed to be used as an example of a cloud application modernization.<br />
+    Some of the design choises in the initial version are deliberately sub optimal for a modern cloud application.
+</p>
+<p>
+    Practice the following goals:
+    <ul>
+        <li>
+            Deploy the application on different compute options. What are the they on Azure that could be used for the application hosting?
+        </li>
+        <li>
+            What are the different identity options that are supported by Entra ID? What is the impact if you use single tennant vs multitenant application?
+        </li>
+        <li>
+            Switch from B2B to B2C. How this chnage impacted the application, the chained services? 
+        </li>
+        <li>
+            Write a Terraform / OpenTofu infrastructure definition that will deploy all the infrastructure comonents
+        </li>
+        <li>
+            Automate the deployment if the applciation using Azure DevOps, Github, Gitlab?
+        </li>
+    </ul>
+</p>
+
+
+
+@code {
+    private int groups;
+    private string sock;
+    private List<string> socks = new List<string>();
+    private bool exists;
+
+
+    private async Task GetSock()
+    {
+        await Task.Run(() =>
+        {
+            if (exists == true)
+            {
+                socks.Clear();
+                exists = false;
+            }
+            else
+            {
+
+                Random r = new Random();
+
+                int draw = r.Next(1, 4);
+
+                switch (draw)
+                {
+                    case 1:
+                        sock = "brown";
+                        break;
+                    case 2:
+                        sock = "blue";
+                        break;
+                    case 3:
+                        sock = "black";
+                        break;
+                }
+
+                socks.Add(sock);
+                List<string> countSocks = new List<string>();
+                countSocks = socks.Where(s => s == sock).ToList();
+                if (countSocks.Count > 1)
+                    exists = true;
+            }
+        });
+    }
+
+    private async Task Reset()
+    {
+        await Task.Run(() =>
+        {
+            socks.Clear();
+            exists = false;
+        });
+    }
+}
