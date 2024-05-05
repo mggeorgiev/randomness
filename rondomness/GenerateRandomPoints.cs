@@ -34,7 +34,7 @@ namespace rondomness
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-
+            _logger.LogInformation(req.ToString());
             string points = req.Query["points"];
             int executions = 8;
 
@@ -54,9 +54,11 @@ namespace rondomness
 
             for (int i = 0; i < executions; i++)
             {
-                Point point = new Point();
-                point.x = GeneratePoint();
-                point.y = GeneratePoint();
+                Point point = new Point
+                {
+                    x = GeneratePoint(),
+                    y = GeneratePoint()
+                };
 
                 listOfpoints.Add(point);
             }
@@ -71,9 +73,6 @@ namespace rondomness
         {
             Random r = new Random();
             var point = r.NextDouble();
-            //int rInt = r.Next(0, 100); //for ints
-            //int range = 100;
-            //double rDouble = r.NextDouble() * range;
             return (double)point;
         }
     }
