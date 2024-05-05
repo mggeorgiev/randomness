@@ -1,0 +1,91 @@
+﻿@page "/burglar-problem"
+@inject HttpClient Http
+@*@inject IAccessTokenProvider TokenProvider*@
+@inject IConfiguration Configuration
+@using System.Net.Http
+@using System.Net.Http.Headers
+@using System.Net.Http.Json
+@using System.Text.Json
+@using Microsoft.Extensions.Configuration
+@*@using Microsoft.AspNetCore.Components.WebAssembly.Authentication*@
+
+<PageTitle>Bulgrar problem</PageTitle>
+
+<h1>The problem of quiting while one is still ahead.</h1>
+
+<p>
+    <a href="https://www.goodreads.com/book/show/25666050-algorithms-to-live-by">source</a>. A burglar can potentially carry out multiple robberies given their skill level, which influences the probability of not getting caught.
+    <br> Considering this skill <b>@skill%</b>, one might wonder: <b>how many robberies should one undertake to maximize success while minimizing the risk of getting caught?</b>
+</p>
+
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text">#</span>
+    </div>
+    <input type="number" class="form-control" placeholder="#" @bind="@answer" />
+
+    <button id="Answer" @onclick="Answer" class="btn btn-primary">Answer</button> <button id="New" @onclick="Resset" class="btn btn-secondary">New</button>
+</div>
+
+<div>
+    <p>
+        <label id="Result">Answer: @result</label>
+    </p>
+    @if (answer != null)
+    {
+        <p id="details">
+            @details
+        </p>
+    }
+</div>
+
+
+@code {
+    private int skill;
+    string? answer;
+    string? result;
+    string? details;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Resset();
+    }
+
+    private async Task Answer()
+    {
+        await Task.Run(() =>
+        {
+            int numberAnswer = Convert.ToInt32(answer);
+            int correctAnswer = ((int)skill / (100 - (int)skill));
+
+            if (correctAnswer == numberAnswer)
+            {
+                details = "The answer is correct.";
+            }
+
+            if (correctAnswer > numberAnswer)
+            {
+                details = "The answer is lower that the correct one.";
+            }
+
+            if (correctAnswer < numberAnswer)
+            {
+                details = "The answer is higher that the correct one.";
+            }
+
+            result = Convert.ToString(correctAnswer);
+        });
+    }
+
+    private async Task Resset()
+    {
+        await Task.Run(() =>
+        {
+            answer = null;
+            details = null;
+            result = null;
+            Random r = new Random();
+            skill = r.Next(1, 10) * 10;
+        });
+    }
+}
