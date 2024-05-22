@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  afn-random-coins:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  afn-random-points:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development

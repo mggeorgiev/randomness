@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  afn-random-coins:
+    image: ${DOCKER_REGISTRY-}afnrandomcoins
+    build:
+      context: .
+      dockerfile: coins/Dockerfile
+
+  afn-random-points:
+    image: ${DOCKER_REGISTRY-}afnrandompoints
+    build:
+      context: .
+      dockerfile: rondomness/Dockerfile
+
