@@ -13,3 +13,8 @@ services:
       context: .
       dockerfile: rondomness/Dockerfile
 
+  frontend:
+    image: ${DOCKER_REGISTRY-}frontend
+    build:
+      context: .
+      dockerfile: rondomness/Dockerfile
