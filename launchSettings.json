@@ -5,7 +5,8 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "afn-random-coins": "StartDebugging",
-        "afn-random-points": "StartDebugging"
+        "afn-random-points": "StartDebugging",
+        "frontend": "StartDebugging"
       }
     }
   }

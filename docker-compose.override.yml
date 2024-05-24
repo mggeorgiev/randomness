@@ -7,3 +7,6 @@ services:
   afn-random-points:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+  frontend:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
