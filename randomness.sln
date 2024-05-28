@@ -9,9 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "afn-random-coins", "coins\a
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "frontend", "frontend\frontend.csproj", "{B7DEDEA1-015F-41C4-947C-F9DD9BD583B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{92069168-12B5-4AD3-8225-8BDE3A963775}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{92069168-12B5-4AD3-8225-8BDE3A963775}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bUnut", "bUnut\bUnut.csproj", "{919C75A6-AE5F-4EFA-B3D9-9AF0237D66E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bUnut", "bUnut\bUnut.csproj", "{919C75A6-AE5F-4EFA-B3D9-9AF0237D66E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5C73D8F9-9560-426E-9F3A-071F16593E4F}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
