@@ -36,8 +36,6 @@ namespace coins
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            //var datas = new ResultData();
-
             string flips = req.Query["flips"];
             string groups = req.Query["groups"];
 
@@ -73,10 +71,8 @@ namespace coins
                     if (tossCoin > 0.5) result = "H";
 
                     listOfFips.Add(result);
-                    //datas.Add(result);
                 }
                 listOfListOfFips.Add(listOfFips);
-                //listOfFips.Clear();
             }
 
             string defaultResponseMessage = string.IsNullOrEmpty(flips)
