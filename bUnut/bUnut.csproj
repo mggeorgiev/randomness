@@ -34,6 +34,13 @@
 	  <ProjectReference Include="..\frontend\frontend.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Update="SonarAnalyzer.CSharp" Version="9.26.0.92422">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+
 
 
 </Project>
