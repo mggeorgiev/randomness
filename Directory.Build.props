@@ -4,12 +4,12 @@
 		<AnalysisMode>all</AnalysisMode>
 		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 		<CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
-		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 	</PropertyGroup>
 	<ItemGroup>
 	    <PackageReference 
 			Include="SonarAnalyzer.CSharp"
-			Version="9.25.1.91650"
+			Version="9.28.0.94264"
 			PrivateAssets="all"
 			Condition="$(MSbuildProjectExtension) == '.csproj'">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -15,11 +15,11 @@ using Newtonsoft.Json;
 
 namespace coins
 {
-    public class healthcheck
+    public class Healthcheck
     {
-        private readonly ILogger<healthcheck> _logger;
+        private readonly ILogger<Healthcheck> _logger;
 
-        public healthcheck(ILogger<healthcheck> log)
+        public Healthcheck(ILogger<Healthcheck> log)
         {
             _logger = log;
         }

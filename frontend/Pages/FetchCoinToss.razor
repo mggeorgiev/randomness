@@ -78,6 +78,11 @@ else
         public int NumberOfGroups { get; set; }
         public int FlipsPerGroup { get; set; }
         public List<List<string>> Data { get; set; }
+
+        public RootObject(List<List<string>> data)
+        {
+            Data = data;
+        }
     }
 
     private int GetCount()
