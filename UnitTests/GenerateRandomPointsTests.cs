@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -31,7 +30,8 @@ namespace UnitTests
         public async Task Run_WhenCalledWithValidPoints_ReturnsOkObjectResult()
         {
             // Arrange
-            var request = new DefaultHttpRequest(new DefaultHttpContext());
+            var context = new DefaultHttpContext();
+            var request = context.Request;
             request.QueryString = new QueryString("?points=10");
 
             // Act
@@ -52,13 +52,9 @@ namespace UnitTests
         public async Task Run_WhenCalledWithInvalidPoints_ReturnsBadRequest()
         {
             // Arrange
-            var request = new DefaultHttpRequest(new DefaultHttpContext())
-            {
-                Query = new QueryCollection(new Dictionary<string, StringValues>()
-                {
-                    { "points", "0" } // Invalid, as it's more than the allowed limit (1000)
-                })
-            };
+            var context = new DefaultHttpContext();
+            var request = context.Request;
+            request.QueryString = new QueryString("?points=0"); // Invalid, as it's less than the allowed limit (1)
 
             // Act
             var result = await _generateRandomPoints.Run(request);
@@ -72,13 +68,9 @@ namespace UnitTests
         public async Task Run_WhenCalledWithoutPoints_ReturnsBadRequest()
         {
             // Arrange
-            var request = new DefaultHttpRequest(new DefaultHttpContext())
-            {
-                Query = new QueryCollection(new Dictionary<string, StringValues>()
-                {
-                    //{ "points", "" } // Invalid, as it's more than the allowed limit (1000)
-                })
-            };
+            var context = new DefaultHttpContext();
+            var request = context.Request;
+            request.QueryString = new QueryString(""); // Invalid, as it's less than the allowed limit (1)
 
             // Act
             var result = await _generateRandomPoints.Run(request);
@@ -92,13 +84,9 @@ namespace UnitTests
         public async Task Run_WhenCalledWithEmptyPoints_ReturnsBadRequest()
         {
             // Arrange
-            var request = new DefaultHttpRequest(new DefaultHttpContext())
-            {
-                Query = new QueryCollection(new Dictionary<string, StringValues>()
-                {
-                    { "points", "" } // Invalid, as it's more than the allowed limit (1000)
-                })
-            };
+            var context = new DefaultHttpContext();
+            var request = context.Request;
+            request.QueryString = new QueryString("?points="); // Invalid, as it's less than the allowed limit (1)
 
             // Act
             var result = await _generateRandomPoints.Run(request);
