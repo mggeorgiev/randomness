@@ -1,6 +1,6 @@
 ﻿using coins;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
+//using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using rondomness;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
 //using Moq;
@@ -32,7 +33,8 @@ namespace UnitTests
         public async Task Run_WhenCalledWithValidFlips_ReturnsOkObjectResult()
         {
             // Arrange
-            var request = new DefaultHttpRequest(new DefaultHttpContext());
+            var context = new DefaultHttpContext();
+            var request = context.Request;
             request.QueryString = new QueryString("?flips=10&groups=16");
 
             // Act
@@ -56,7 +58,8 @@ namespace UnitTests
         public async Task Run_WhenCalledWithDefault_ReturnsOkObjectResult()
         {
             // Arrange
-            var request = new DefaultHttpRequest(new DefaultHttpContext());
+            var context = new DefaultHttpContext();
+            var request = context.Request;
             request.QueryString = new QueryString("");
 
             // Act
@@ -80,14 +83,9 @@ namespace UnitTests
         public async Task Run_WhenCalledWithInvalidPoints_ReturnsBadRequest()
         {
             // Arrange
-            var request = new DefaultHttpRequest(new DefaultHttpContext())
-            {
-                Query = new QueryCollection(new Dictionary<string, StringValues>()
-                {
-                    { "flips", "101" }, // Invalid, as it's more than the allowed limit (100)
-                    { "groups", "10" }
-                })
-            };
+            var context = new DefaultHttpContext();
+            var request = context.Request;
+            request.QueryString = new QueryString("?flips=101&groups=10"); // Invalid, as it's more than the allowed limit (100)
 
             // Act
             var result = await _generateRandomCoinSequence.Run(request);
@@ -97,14 +95,7 @@ namespace UnitTests
             Assert.Equal("Cannot return more than 100 coin flips.", badRequestResult.Value);
 
             // Arrange
-            request = new DefaultHttpRequest(new DefaultHttpContext())
-            {
-                Query = new QueryCollection(new Dictionary<string, StringValues>()
-                {
-                    { "flips", "10" }, 
-                    { "groups", "101" }// Invalid, as it's more than the allowed limit (100)
-                })
-            };
+            request.QueryString = new QueryString("?flips=10&groups=101"); // Invalid, as it's more than the allowed limit (100)
 
             // Act
             result = await _generateRandomCoinSequence.Run(request);
@@ -113,9 +104,8 @@ namespace UnitTests
             badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Cannot return less then 1 and more than 100 groups of flips.", badRequestResult.Value);
         }
-
-
     }
+
     public class CoinFlips
     {
         public int NumberOfGroups { get; set; }
