@@ -6,10 +6,10 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["points/afn-random-points.csproj", "rondomness/"]
-RUN dotnet restore "points/afn-random-points.csproj"
+COPY ["rondomness/afn-random-points.csproj", "rondomness/"]
+RUN dotnet restore "rondomness/afn-random-points.csproj"
 COPY . .
-WORKDIR "/src/points"
+WORKDIR "/src/rondomness"
 RUN dotnet build "afn-random-points.csproj" -c Release -o /app/build
 
 FROM build AS publish
