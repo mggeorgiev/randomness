@@ -15,11 +15,11 @@ using Newtonsoft.Json;
 
 namespace afn_random_functions
 {
-    public class GenerateRandomCoinSequence
+    public class GenerateRandomCoinTossSequence
     {
-        private readonly ILogger<GenerateRandomCoinSequence> _logger;
+        private readonly ILogger<GenerateRandomCoinTossSequence> _logger;
 
-        public GenerateRandomCoinSequence(ILogger<GenerateRandomCoinSequence> log)
+        public GenerateRandomCoinTossSequence(ILogger<GenerateRandomCoinTossSequence> log)
         {
             _logger = log;
         }
@@ -60,7 +60,7 @@ namespace afn_random_functions
             var listOfListOfFips = new List<List<string>>();
 
             for (int n = 0; n < groupsToDeliver; n++)
-            { 
+            {
                 var listOfFips = new List<string>();
                 for (int i = 0; i < flipsToDeliver; i++)
                 {

@@ -2,14 +2,8 @@
   "profiles": {
     "afn_random_functions": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7020"
-    },
-    "Container (Dockerfile)": {
-      "commandName": "Docker",
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "DockerfileRunArguments": "--init",
-      "httpPort": 32197,
-      "useSSL": false
+      "commandLineArgs": "--port 7194",
+      "launchBrowser": false
     }
   }
 }

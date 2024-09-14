@@ -2,28 +2,23 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace afn_random_functions
 {
-    public class healthcheck
+    public class points
     {
-        private readonly ILogger<healthcheck> _logger;
+        private readonly ILogger<points> _logger;
 
-        public healthcheck(ILogger<healthcheck> logger)
+        public points(ILogger<points> logger)
         {
             _logger = logger;
         }
 
-        [Function("healthcheck")]
+        [Function("points")]
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-            string responce = "Randomness API is running OK!";
-
-            string responseMessage = JsonConvert.SerializeObject(responce, Newtonsoft.Json.Formatting.Indented);
-
-            return new OkObjectResult(responseMessage);
+            return new OkObjectResult("Welcome to Azure Functions!");
         }
     }
 }

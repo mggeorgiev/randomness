@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "afn-random-functions", "afn-random-functions\afn-random-functions.csproj", "{10E511E3-1EE0-4868-81ED-AD38D4A1A61D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "afn-random-functions", "afn-random-functions\afn-random-functions.csproj", "{2098CBDB-D1D3-45D1-9F46-1062A479AABB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,10 +46,10 @@ Global
 		{919C75A6-AE5F-4EFA-B3D9-9AF0237D66E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{919C75A6-AE5F-4EFA-B3D9-9AF0237D66E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{919C75A6-AE5F-4EFA-B3D9-9AF0237D66E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{10E511E3-1EE0-4868-81ED-AD38D4A1A61D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{10E511E3-1EE0-4868-81ED-AD38D4A1A61D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{10E511E3-1EE0-4868-81ED-AD38D4A1A61D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{10E511E3-1EE0-4868-81ED-AD38D4A1A61D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2098CBDB-D1D3-45D1-9F46-1062A479AABB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2098CBDB-D1D3-45D1-9F46-1062A479AABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2098CBDB-D1D3-45D1-9F46-1062A479AABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2098CBDB-D1D3-45D1-9F46-1062A479AABB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
