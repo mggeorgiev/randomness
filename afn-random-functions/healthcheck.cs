@@ -6,11 +6,11 @@ using Newtonsoft.Json;
 
 namespace afn_random_functions
 {
-    public class healthcheck
+    public class HealthCheck
     {
-        private readonly ILogger<healthcheck> _logger;
+        private readonly ILogger<HealthCheck> _logger;
 
-        public healthcheck(ILogger<healthcheck> logger)
+        public HealthCheck(ILogger<HealthCheck> logger)
         {
             _logger = logger;
         }
