@@ -1,17 +1,17 @@
-xname: Build and deploy .NET Core application to Function App afn-randomness-001
+name: Build and deploy .NET Core application to Function App afn-randomness-001
 on:
   push:
     branches:
     - master
     paths:
-        - points/**
+        - rondomness/**
 env:
   AZURE_FUNCTIONAPP_NAME: afn-randomness-001
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: points
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: rondomness
   AZURE_FUNCTIONAPP_PUBLISH_PROFILE: AFN_POINTS_001
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
-  WORKING_DIRECTORY: points
+  WORKING_DIRECTORY: rondomness
 jobs:
   build:
     runs-on: ubuntu-latest
