@@ -25,7 +25,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\coins\afn-random-coins.csproj" />
-		<ProjectReference Include="..\rondomness\afn-random-points.csproj" />
+		<ProjectReference Include="..\points\afn-random-points.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -13,7 +13,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace rondomness
+namespace points
 {
     public class GenerateRandomPoints
     {
