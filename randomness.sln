@@ -1,9 +1,9 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "afn-random-points", "rondomness\afn-random-points.csproj", "{94CDBEA7-B5E7-4246-B751-6504AD869B4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "afn-random-points", "points\afn-random-points.csproj", "{94CDBEA7-B5E7-4246-B751-6504AD869B4F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "afn-random-coins", "coins\afn-random-coins.csproj", "{48046E3F-F61C-4C93-844D-FD453ACF5867}"
 EndProject
