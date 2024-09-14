@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace afn_random_functions
 {
@@ -19,20 +14,19 @@ namespace afn_random_functions
     {
         private readonly ILogger<GenerateRandomCoinTossSequence> _logger;
 
-        public GenerateRandomCoinTossSequence(ILogger<GenerateRandomCoinTossSequence> log)
+        public GenerateRandomCoinTossSequence(ILogger<GenerateRandomCoinTossSequence> logger)
         {
-            _logger = log;
+            _logger = logger;
         }
 
-        [FunctionName("coins")]
+        [Function("coins")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiParameter(name: "flips", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **flips** parameter. How many coin flips per group.")]
         [OpenApiParameter(name: "groups", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **groups** parameter. How many sets of flips to be returned.")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(RootObject), Description = "The OK response")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "text/plain", bodyType: typeof(string), Description = "The 400 response")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -96,4 +90,3 @@ namespace afn_random_functions
         public List<List<string>> Data { get; set; }
     }
 }
-
