@@ -1,9 +1,9 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "afn-random-points", "rondomness\afn-random-points.csproj", "{94CDBEA7-B5E7-4246-B751-6504AD869B4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "afn-random-points", "points\afn-random-points.csproj", "{94CDBEA7-B5E7-4246-B751-6504AD869B4F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "afn-random-coins", "coins\afn-random-coins.csproj", "{48046E3F-F61C-4C93-844D-FD453ACF5867}"
 EndProject
@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "afn-random-functions", "afn-random-functions\afn-random-functions.csproj", "{3A29534F-74B8-4854-96FA-DF0645766519}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{919C75A6-AE5F-4EFA-B3D9-9AF0237D66E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{919C75A6-AE5F-4EFA-B3D9-9AF0237D66E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{919C75A6-AE5F-4EFA-B3D9-9AF0237D66E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A29534F-74B8-4854-96FA-DF0645766519}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A29534F-74B8-4854-96FA-DF0645766519}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A29534F-74B8-4854-96FA-DF0645766519}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A29534F-74B8-4854-96FA-DF0645766519}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
