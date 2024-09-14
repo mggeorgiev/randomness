@@ -4,11 +4,11 @@ on: [workflow_dispatch]
 
 env:
   AZURE_FUNCTIONAPP_NAME: afn-randomness-001
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: rondomness
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: points
   AZURE_FUNCTIONAPP_PUBLISH_PROFILE: AFN_POINTS_001
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
-  WORKING_DIRECTORY: rondomness
+  WORKING_DIRECTORY: points
 jobs:
   build:
     runs-on: ubuntu-latest
