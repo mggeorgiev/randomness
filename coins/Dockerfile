@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/azure-functions/dotnet:4 AS base
 WORKDIR /home/site/wwwroot
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["coins/afn-random-coins.csproj", "coins/"]
 RUN dotnet restore "coins/afn-random-coins.csproj"

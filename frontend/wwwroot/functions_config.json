@@ -2,5 +2,6 @@
   //https://<APP_NAME>.azurewebsites.net/api/<FUNCTION_NAME>?code=<API_KEY>
   //if you provide also the key replace in the end of the address ? with &
   "CoinsFunctionAddress": "http://localhost:32747/api/coins?",
-  "PointsFunctionAddress": "http://localhost:30763/api/points?"
+  "PointsFunctionAddress": "http://localhost:30763/api/points?",
+  "RandomnessAPIFunctionAddress": "http://localhost:37194/api/points?"
 }
