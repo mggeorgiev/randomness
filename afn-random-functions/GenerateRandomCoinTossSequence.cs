@@ -19,13 +19,13 @@ namespace afn_random_functions
             _logger = logger;
         }
 
-        [Function("coins")]
-        [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
+        [OpenApiOperation(operationId: "Run", tags: new[] { "name" }, Summary = "Coins", Description = "This endpoint returns the sequences if coin toss.", Visibility = OpenApiVisibilityType.Important)]
         //[OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiParameter(name: "flips", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **flips** parameter. How many coin flips per group.")]
         [OpenApiParameter(name: "groups", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **groups** parameter. How many sets of flips to be returned.")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(RootObject), Description = "The OK response")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "text/plain", bodyType: typeof(string), Description = "The 400 response")]
+        [Function("coins")]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
