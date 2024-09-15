@@ -9,7 +9,7 @@
       "commandLineArgs": "-p 37194",
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "DockerfileRunArguments": "--init",
-      "httpPort": 30643,
+      "httpPort": 37194,
       "useSSL": false
     }
   }

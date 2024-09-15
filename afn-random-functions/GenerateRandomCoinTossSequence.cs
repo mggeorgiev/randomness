@@ -21,7 +21,7 @@ namespace afn_random_functions
 
         [Function("coins")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        //[OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiParameter(name: "flips", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **flips** parameter. How many coin flips per group.")]
         [OpenApiParameter(name: "groups", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **groups** parameter. How many sets of flips to be returned.")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(RootObject), Description = "The OK response")]
