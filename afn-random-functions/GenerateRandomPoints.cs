@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.OpenApi.Models;
@@ -59,6 +58,7 @@ namespace afn_random_functions
                 listOfpoints.Add(point);
             }
 
+            _logger.LogInformation(numberOfPoints.ToString() + " points generated.");
             string responseMessage = JsonConvert.SerializeObject(listOfpoints, Formatting.Indented);
 
             return new OkObjectResult(responseMessage);
