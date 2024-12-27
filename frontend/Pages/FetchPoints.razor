@@ -79,12 +79,19 @@
         try	
         {
 
-            var baseURL = Configuration.GetSection("PointsFunctionAddress").Value;
+            //var baseURL = Configuration.GetSection("PointsFunctionAddress").Value;
+            var baseURL = Configuration.GetSection("RandomnessAPIFunctionAddress").Value;
 
-            string url = baseURL+ "points=" + PointsCount.ToString();
+            string url = baseURL+ "number=" + PointsCount.ToString();
 
             HttpResponseMessage response = await Http.GetAsync(url);
-            response.EnsureSuccessStatusCode();
+            // Log the status code for debugging
+            Console.WriteLine($"Status Code: {response.StatusCode}");
+            
+            response.EnsureSuccessStatusCode(); 
+            // Log the response headers for debugging
+            Console.WriteLine($"Response Headers: {response.Headers}");
+
             responseBody = await response.Content.ReadAsStringAsync();
             Points = await response.Content.ReadFromJsonAsync<RootObject[]>();
 
@@ -95,6 +102,15 @@
         {
             Console.WriteLine("\nException Caught!");	
             Console.WriteLine("Message :{0} ",e.Message);
+            if (e.InnerException != null)
+            {
+                Console.WriteLine($"Inner Exception: {e.InnerException.Message}");
+            }
+        }
+        catch (Exception e) 
+        {
+            Console.WriteLine("\nGeneral Exception Caught!");
+            Console.WriteLine($"Message: {e.Message}"); 
         }
     }
 

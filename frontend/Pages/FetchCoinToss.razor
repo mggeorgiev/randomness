@@ -14,16 +14,16 @@
 <h1>Coin flips</h1>
 
 <div class="input-group mb-3">
-      <div class="input-group-prepend">
+    <div class="input-group-prepend">
         <span class="input-group-text"># of groups</span>
-      </div>
+    </div>
     <input type="number" class="form-control" placeholder="# of groups" @bind="@groups" />
 </div>
 
 <div class="input-group mb-3">
-      <div class="input-group-prepend">
+    <div class="input-group-prepend">
         <span class="input-group-text"># of flips per group</span>
-      </div>
+    </div>
     <input type="number" class="form-control" placeholder="# of flips per group" @bind="@flips" />
 </div>
 <div class="input-group mb-3">
@@ -33,7 +33,7 @@
 
 @if (coinFlips == null)
 {
-    if(DataIsRequested)
+    if (DataIsRequested)
     {
         <p><em>Loading...</em></p>
     }
@@ -55,7 +55,7 @@ else
             {
                 <tr>
                     <td>@GetCount()</td>
-                    @foreach(var item in group)
+                    @foreach (var item in group)
                     {
                         <td>@item</td>
                     }
@@ -66,8 +66,8 @@ else
 }
 
 @code {
-    private int count=0;
-    private bool DataIsRequested; 
+    private int count = 0;
+    private bool DataIsRequested;
     private int groups = 8;
     private int flips = 16;
     private string? responseBody;
@@ -91,35 +91,36 @@ else
             count = 0;
         return ++count;
     }
-    private int RessetCount() => count=0;
+    private int RessetCount() => count = 0;
 
     private async Task GetRequest()
     {
         count = 0;
         DataIsRequested = true;
-        try	
+        try
         {
             //var baseURL = "http://localhost:7071/api/coins";
-            var baseURL = Configuration.GetSection("CoinsFunctionAddress").Value;
+            // var baseURL = Configuration.GetSection("CoinsFunctionAddress").Value;
+            var baseURL = Configuration.GetSection("RandomnessAPIFunctionAddress").Value;
 
-            string url = baseURL + "groups=" + groups.ToString() + "&flips="+flips.ToString();
+            string url = baseURL + "groups=" + groups.ToString() + "&flips=" + flips.ToString();
 
             HttpResponseMessage response = await Http.GetAsync(url);
             response.EnsureSuccessStatusCode();
             responseBody = await response.Content.ReadAsStringAsync();
             coinFlips = await response.Content.ReadFromJsonAsync<RootObject>();
 
-            if(coinFlips != null)
+            if (coinFlips != null)
             {
                 groups = coinFlips.NumberOfGroups;
                 flips = coinFlips.FlipsPerGroup;
             }
             DataIsRequested = false;
         }
-        catch(HttpRequestException e)
+        catch (HttpRequestException e)
         {
-            Console.WriteLine("\nException Caught!");	
-            Console.WriteLine("Message :{0} ",e.Message);
+            Console.WriteLine("\nException Caught!");
+            Console.WriteLine("Message :{0} ", e.Message);
         }
     }
 }
