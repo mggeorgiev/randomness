@@ -103,7 +103,7 @@ else
             // var baseURL = Configuration.GetSection("CoinsFunctionAddress").Value;
             var baseURL = Configuration.GetSection("RandomnessAPIFunctionAddress").Value;
 
-            string url = baseURL + "groups=" + groups.ToString() + "&flips=" + flips.ToString();
+            string url = baseURL + "coins?groups=" + groups.ToString() + "&flips=" + flips.ToString();
 
             HttpResponseMessage response = await Http.GetAsync(url);
             response.EnsureSuccessStatusCode();

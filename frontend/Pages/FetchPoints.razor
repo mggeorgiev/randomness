@@ -79,10 +79,10 @@
         try	
         {
 
-            //var baseURL = Configuration.GetSection("PointsFunctionAddress").Value;
-            var baseURL = Configuration.GetSection("RandomnessAPIFunctionAddress").Value;
+            var baseURL = Configuration.GetSection("PointsFunctionAddress").Value;
+            //var baseURL = Configuration.GetSection("RandomnessAPIFunctionAddress").Value;
 
-            string url = baseURL+ "number=" + PointsCount.ToString();
+            string url = baseURL + "points?number=" + PointsCount.ToString();
 
             HttpResponseMessage response = await Http.GetAsync(url);
             // Log the status code for debugging
