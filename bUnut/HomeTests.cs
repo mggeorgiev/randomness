@@ -31,7 +31,7 @@ public class HomeTests : TestContext
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Pages.Index>();
+        var cut = ctx.Render<frontend.Pages.Index>();
 
         // Assert
         Assert.NotNull(cut);

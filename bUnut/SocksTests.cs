@@ -14,7 +14,7 @@ namespace bUnut;
 /// These tests are written entirely in C#.
 /// Learn more at https://bunit.dev/docs/getting-started/writing-tests.html#creating-basic-tests-in-cs-files
 /// </summary>
-public class SocksTests : TestContext
+public class SocksTests : BunitContext
 {
     [Fact]
     public void SocksComponentRendersCorrectly()
@@ -27,11 +27,11 @@ public class SocksTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Pages.Socks>();
+        var cut = ctx.Render<frontend.Pages.Socks>();
 
         // Assert
         Assert.NotNull(cut);
@@ -62,11 +62,11 @@ public class SocksTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Pages.Socks>();
+        var cut = ctx.Render<frontend.Pages.Socks>();
 
         // Assert
         var header = cut.Find("h1");
@@ -85,11 +85,11 @@ public class SocksTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Pages.Socks>();
+        var cut = ctx.Render<frontend.Pages.Socks>();
 
         // Assert that content of the paragraph shows counter at zero
         cut.Find("label").MarkupMatches("<label># of tries: 0</label>");
@@ -106,9 +106,9 @@ public class SocksTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
-        var cut = ctx.RenderComponent<frontend.Pages.Socks>();
+        var cut = ctx.Render<frontend.Pages.Socks>();
 
         // Act - click button to increment counter
         cut.Find("button").Click();

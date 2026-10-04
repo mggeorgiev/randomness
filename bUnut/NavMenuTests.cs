@@ -34,7 +34,7 @@ public class NavMenuTests : TestContext
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Shared.NavMenu>();
+        var cut = ctx.Render<frontend.Shared.NavMenu>();
 
         // Assert
         Assert.NotNull(cut);
@@ -86,7 +86,7 @@ public class NavMenuTests : TestContext
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Shared.NavMenu>();
+        var cut = ctx.Render<frontend.Shared.NavMenu>();
 
         // Act
         var navLink = cut.Find("#deck-cards");
@@ -114,7 +114,7 @@ public class NavMenuTests : TestContext
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Shared.NavMenu>();
+        var cut = ctx.Render<frontend.Shared.NavMenu>();
 
         // Act
         var navLink = cut.Find("#deck-cards");
