@@ -14,7 +14,7 @@ namespace bUnut;
 /// These tests are written entirely in C#.
 /// Learn more at https://bunit.dev/docs/getting-started/writing-tests.html#creating-basic-tests-in-cs-files
 /// </summary>
-public class HomeTests : TestContext
+public class HomeTests : BunitContext
 {
     [Fact]
     public void HomeComponentRendersCorrectly()
@@ -27,7 +27,7 @@ public class HomeTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
