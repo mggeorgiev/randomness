@@ -17,8 +17,20 @@ namespace bUnut;
 /// These tests are written entirely in C#.
 /// Learn more at https://bunit.dev/docs/getting-started/writing-tests.html#creating-basic-tests-in-cs-files
 /// </summary>
-public class NavMenuTests : TestContext
+public class NavMenuTests : BunitContext
 {
+    public NavMenuTests()
+    {
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string?>
+            {
+                ["CoinsFunctionAddress"] = "http://localhost/api/coins?",
+                ["PointsFunctionAddress"] = "http://localhost/api/points?"
+            })
+            .Build();
+
+        Services.AddSingleton<IConfiguration>(config);
+    }
     [Fact]
     public void NavMenuComponentRendersCorrectly()
     {
@@ -30,11 +42,11 @@ public class NavMenuTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Shared.NavMenu>();
+        var cut = ctx.Render<frontend.Shared.NavMenu>();
 
         // Assert
         Assert.NotNull(cut);
@@ -82,11 +94,11 @@ public class NavMenuTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Shared.NavMenu>();
+        var cut = ctx.Render<frontend.Shared.NavMenu>();
 
         // Act
         var navLink = cut.Find("#deck-cards");
@@ -110,11 +122,11 @@ public class NavMenuTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Shared.NavMenu>();
+        var cut = ctx.Render<frontend.Shared.NavMenu>();
 
         // Act
         var navLink = cut.Find("#deck-cards");

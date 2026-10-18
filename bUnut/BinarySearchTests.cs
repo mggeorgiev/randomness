@@ -17,8 +17,20 @@ namespace bUnut;
 /// These tests are written entirely in C#.
 /// Learn more at https://bunit.dev/docs/getting-started/writing-tests.html#creating-basic-tests-in-cs-files
 /// </summary>
-public class BinarySearchTests : TestContext
+public class BinarySearchTests : BunitContext
 {
+    public BinarySearchTests()
+    {
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string?>
+            {
+                ["CoinsFunctionAddress"] = "http://localhost/api/coins?",
+                ["PointsFunctionAddress"] = "http://localhost/api/points?"
+            })
+            .Build();
+
+        Services.AddSingleton<IConfiguration>(config);
+    }
     [Fact]
     public void BinarySearchComponentRendersCorrectly()
     {
@@ -30,11 +42,11 @@ public class BinarySearchTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Pages.BinarySearch>();
+        var cut = Render<frontend.Pages.BinarySearch>();
 
         // Assert
         Assert.NotNull(cut);
@@ -74,11 +86,11 @@ public class BinarySearchTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Pages.BinarySearch>();
+        var cut = ctx.Render<frontend.Pages.BinarySearch>();
 
         // Assert
         var header = cut.Find("h1");
@@ -97,11 +109,11 @@ public class BinarySearchTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Pages.BinarySearch>();
+        var cut = ctx.Render<frontend.Pages.BinarySearch>();
 
         // Assert that content of the paragraph shows counter at zero
         cut.Find("#Result").MarkupMatches("<label id=\"Result\">Result: </label>");
@@ -119,9 +131,9 @@ public class BinarySearchTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
-        var cut = ctx.RenderComponent<frontend.Pages.BinarySearch>();
+        var cut = ctx.Render<frontend.Pages.BinarySearch>();
 
         // Act - click button to increment counter
         cut.Find("#Guess").Click();
@@ -141,9 +153,9 @@ public class BinarySearchTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
-        var cut = ctx.RenderComponent<frontend.Pages.BinarySearch>();
+        var cut = ctx.Render<frontend.Pages.BinarySearch>();
 
         // Act - click button to increment counter
         cut.Find("#Guess").Click();
@@ -172,9 +184,9 @@ public class BinarySearchTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
-        var cut = ctx.RenderComponent<frontend.Pages.BinarySearch>();
+        var cut = ctx.Render<frontend.Pages.BinarySearch>();
 
         string[,] expectedValues = new string[2, 2] // Assuming 9 rows and 6 columns
         {
@@ -226,9 +238,9 @@ public class BinarySearchTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
-        var cut = ctx.RenderComponent<frontend.Pages.BinarySearch>();
+        var cut = ctx.Render<frontend.Pages.BinarySearch>();
 
         // Act - click button to increment counter
         cut.Find("#Guess").Click();

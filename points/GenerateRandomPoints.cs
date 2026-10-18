@@ -1,11 +1,6 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,47 +12,88 @@ namespace points
 {
     public class GenerateRandomPoints
     {
-        private readonly ILogger<GenerateRandomPoints> _logger;
+        private readonly ILogger<GenerateRandomPoints>? _logger;
+
+        public GenerateRandomPoints()
+        {
+        }
 
         public GenerateRandomPoints(ILogger<GenerateRandomPoints> log)
         {
             _logger = log;
         }
 
-        [FunctionName("points")]
-        [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiParameter(name: "points", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Points** parameter")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "text/plain", bodyType: typeof(string), Description = "The 400 response")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
+        [Function("points")]
+        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req, FunctionContext? context = null)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
-            _logger.LogInformation(req.ToString());
-            string points = req.Query["points"];
+            var logger = context != null ? context.GetLogger<GenerateRandomPoints>() : (ILogger<GenerateRandomPoints>?)_logger;
+            logger?.LogInformation("C# HTTP trigger function processed a request.");
+
+            // use GeneratePoints to produce result
+
+
+            string points = null;
+
+            // parse query string for 'points'
+            var query = req.Url.Query;
+            if (!string.IsNullOrEmpty(query))
+            {
+                var kvpairs = query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var kv in kvpairs)
+                {
+                    var parts = kv.Split('=', 2);
+                    if (parts.Length == 2 && parts[0] == "points")
+                    {
+                        points = Uri.UnescapeDataString(parts[1]);
+                        break;
+                    }
+                }
+            }
+
             int executions = 8;
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            points = points ?? data?.points;
+            using (var reader = new StreamReader(req.Body))
+            {
+                string requestBody = await reader.ReadToEndAsync();
+                dynamic data = JsonConvert.DeserializeObject(requestBody);
+                points = points ?? data?.points;
+            }
 
-            if (points == null || points == "")
-                return new BadRequestObjectResult("Points parameter that scpecifies the number of points is requried. Cannot return less then 1 and more than 1000 points");
+            var badResponse = req.CreateResponse();
 
-            executions = Convert.ToInt32(points);
+            if (string.IsNullOrEmpty(points))
+            {
+                badResponse.StatusCode = HttpStatusCode.BadRequest;
+                badResponse.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+                badResponse.WriteString("Points parameter that specifies the number of points is required. Cannot return less than 1 and more than 1000 points");
+                return badResponse;
+            }
+
+            if (!int.TryParse((string)points, out executions))
+            {
+                badResponse.StatusCode = HttpStatusCode.BadRequest;
+                badResponse.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+                badResponse.WriteString("Points parameter must be an integer");
+                return badResponse;
+            }
 
             if (executions > 1000 || executions < 1)
-                return new BadRequestObjectResult("Cannot return less then 1 and more than 1000 points");
+            {
+                badResponse.StatusCode = HttpStatusCode.BadRequest;
+                badResponse.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+                badResponse.WriteString("Cannot return less than 1 and more than 1000 points");
+                return badResponse;
+            }
 
             var listOfpoints = new List<Point>();
 
+            var rnd = new Random();
             for (int i = 0; i < executions; i++)
             {
                 Point point = new Point
                 {
-                    x = GeneratePoint(),
-                    y = GeneratePoint()
+                    x = rnd.NextDouble(),
+                    y = rnd.NextDouble()
                 };
 
                 listOfpoints.Add(point);
@@ -65,15 +101,32 @@ namespace points
 
             string responseMessage = JsonConvert.SerializeObject(listOfpoints, Formatting.Indented);
 
-            return new OkObjectResult(responseMessage);
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+            response.WriteString(responseMessage);
+            return response;
         }
 
-
-        private double GeneratePoint()
+        // Exposed for unit testing: generate n points and validate input
+        public List<Point> GeneratePoints(int executions)
         {
-            Random r = new Random();
-            var point = r.NextDouble();
-            return (double)point;
+            if (executions < 1 || executions > 1000)
+                throw new ArgumentOutOfRangeException(nameof(executions), "Executions must be between 1 and 1000");
+
+            var listOfpoints = new List<Point>();
+            var rnd = new Random();
+            for (int i = 0; i < executions; i++)
+            {
+                Point point = new Point
+                {
+                    x = rnd.NextDouble(),
+                    y = rnd.NextDouble()
+                };
+
+                listOfpoints.Add(point);
+            }
+
+            return listOfpoints;
         }
     }
 

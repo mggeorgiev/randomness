@@ -18,8 +18,20 @@ namespace bUnut;
 /// These tests are written entirely in C#.
 /// Learn more at https://bunit.dev/docs/getting-started/writing-tests.html#creating-basic-tests-in-cs-files
 /// </summary>
-public class BurglarProblemTests : TestContext
+public class BurglarProblemTests : BunitContext
 {
+    public BurglarProblemTests()
+    {
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string?>
+            {
+                ["CoinsFunctionAddress"] = "http://localhost/api/coins?",
+                ["PointsFunctionAddress"] = "http://localhost/api/points?"
+            })
+            .Build();
+
+        Services.AddSingleton<IConfiguration>(config);
+    }
     [Fact]
     public void BurglarProblemComponentRendersCorrectly()
     {
@@ -30,11 +42,11 @@ public class BurglarProblemTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Pages.BurglarProblem>();
+        var cut = ctx.Render<frontend.Pages.BurglarProblem>();
 
         // Assert
         Assert.NotNull(cut);
@@ -83,11 +95,11 @@ public class BurglarProblemTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Pages.BurglarProblem>();
+        var cut = ctx.Render<frontend.Pages.BurglarProblem>();
 
         // Assert
         Assert.NotNull(cut);
@@ -109,11 +121,11 @@ public class BurglarProblemTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.RenderComponent<frontend.Pages.BurglarProblem>();
+        var cut = ctx.Render<frontend.Pages.BurglarProblem>();
 
         // Assert that content of the paragraph shows counter at zero
         cut.Find("#Result").MarkupMatches("<label id=\"Result\">Answer: </label>");
@@ -130,9 +142,9 @@ public class BurglarProblemTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
-        var cut = ctx.RenderComponent<frontend.Pages.BurglarProblem>();
+        var cut = ctx.Render<frontend.Pages.BurglarProblem>();
 
         var result = cut.Find("#Result");
         cut.Find("#Result").MarkupMatches(initialAnswer);
@@ -178,9 +190,9 @@ public class BurglarProblemTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
-        var cut = ctx.RenderComponent<frontend.Pages.BurglarProblem>();
+        var cut = ctx.Render<frontend.Pages.BurglarProblem>();
 
         // Act
         var paragraphElement = cut.Find("p");
@@ -203,10 +215,10 @@ public class BurglarProblemTests : TestContext
         //Act: Add the correct answer
         var inputElement = cut.Find("input");
         Assert.NotNull(inputElement);
-        inputElement.Change(correctAnswer);
+        await cut.InvokeAsync(() => inputElement.Change(correctAnswer));
 
         // Act - click button to increment counter
-        cut.Find("#Answer").Click();
+        await cut.InvokeAsync(() => cut.Find("#Answer").Click());
 
         await Task.Delay(100); // Adjust the delay time as needed
 
@@ -231,9 +243,9 @@ public class BurglarProblemTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
-        var cut = ctx.RenderComponent<frontend.Pages.BurglarProblem>();
+        var cut = ctx.Render<frontend.Pages.BurglarProblem>();
 
         // Act
         var paragraphElement = cut.Find("p");
@@ -284,9 +296,9 @@ public class BurglarProblemTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
-        var cut = ctx.RenderComponent<frontend.Pages.BurglarProblem>();
+        var cut = ctx.Render<frontend.Pages.BurglarProblem>();
 
         // Act
         var paragraphElement = cut.Find("p");
@@ -337,9 +349,9 @@ public class BurglarProblemTests : TestContext
             .AddJsonFile(path)
             .Build();
 
-        using var ctx = new TestContext();
+        using var ctx = new BunitContext();
         ctx.Services.AddSingleton<IConfiguration>(config);
-        var cut = ctx.RenderComponent<frontend.Pages.BurglarProblem>();
+        var cut = ctx.Render<frontend.Pages.BurglarProblem>();
 
         var result = cut.Find("#Result");
         cut.Find("#Result").MarkupMatches(initialAnswer);

@@ -1,107 +1,55 @@
 ﻿using coins;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using coins;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Xunit;
-//using Moq;
+using System;
+using System.Collections.Generic;
 
 namespace UnitTests
 {
     public class GenerateRandomCoinSequenceTest
     {
-        private readonly ILogger<GenerateRandomCoinSequence> _logger;
         private readonly GenerateRandomCoinSequence _generateRandomCoinSequence;
 
         public GenerateRandomCoinSequenceTest()
         {
-            _logger = new LoggerFactory().CreateLogger<GenerateRandomCoinSequence>();
-            _generateRandomCoinSequence = new GenerateRandomCoinSequence(_logger);
-        }
-
-
-        [Fact]
-        public async Task Run_WhenCalledWithValidFlips_ReturnsOkObjectResult()
-        {
-            // Arrange
-            var context = new DefaultHttpContext();
-            var request = context.Request;
-            request.QueryString = new QueryString("?flips=10&groups=16");
-
-            // Act
-            var result = await _generateRandomCoinSequence.Run(request);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.NotNull(okResult.Value);
-
-            var jsonResponse = okResult.Value as string;
-            Assert.NotNull(jsonResponse);
-
-            var coinsSequence = JsonConvert.DeserializeObject<CoinFlips>(jsonResponse);
-            Assert.NotNull(coinsSequence);
-            Assert.Equal(16, coinsSequence.NumberOfGroups);
-            Assert.Equal(10, coinsSequence.FlipsPerGroup);
-            Assert.Equal(coinsSequence.NumberOfGroups, coinsSequence.Data.Count);
+            _generateRandomCoinSequence = new GenerateRandomCoinSequence();
         }
 
         [Fact]
-        public async Task Run_WhenCalledWithDefault_ReturnsOkObjectResult()
+        public void GenerateSequence_WithValidInputs_ReturnsCorrectStructure()
         {
             // Arrange
-            var context = new DefaultHttpContext();
-            var request = context.Request;
-            request.QueryString = new QueryString("");
+            int flips = 10;
+            int groups = 16;
 
             // Act
-            var result = await _generateRandomCoinSequence.Run(request);
+            var result = _generateRandomCoinSequence.GenerateSequence(flips, groups);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.NotNull(okResult.Value);
-
-            var jsonResponse = okResult.Value as string;
-            Assert.NotNull(jsonResponse);
-
-            var coinsSequence = JsonConvert.DeserializeObject<CoinFlips>(jsonResponse);
-            Assert.NotNull(coinsSequence);
-            Assert.Equal(8, coinsSequence.NumberOfGroups);
-            Assert.Equal(16, coinsSequence.FlipsPerGroup);
-            Assert.Equal(coinsSequence.NumberOfGroups, coinsSequence.Data.Count);
+            Assert.NotNull(result);
+            Assert.Equal(groups, result.NumberOfGroups);
+            Assert.Equal(flips, result.FlipsPerGroup);
+            Assert.Equal(groups, result.Data.Count);
+            Assert.All(result.Data, group => Assert.Equal(flips, group.Count));
         }
 
         [Fact]
-        public async Task Run_WhenCalledWithInvalidPoints_ReturnsBadRequest()
+        public void GenerateSequence_Defaults_AreValid()
         {
-            // Arrange
-            var context = new DefaultHttpContext();
-            var request = context.Request;
-            request.QueryString = new QueryString("?flips=101&groups=10"); // Invalid, as it's more than the allowed limit (100)
+            // Use defaults defined in the function: 16 flips, 8 groups
+            var result = _generateRandomCoinSequence.GenerateSequence(16, 8);
+            Assert.NotNull(result);
+            Assert.Equal(8, result.NumberOfGroups);
+            Assert.Equal(16, result.FlipsPerGroup);
+        }
 
-            // Act
-            var result = await _generateRandomCoinSequence.Run(request);
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Cannot return more than 100 coin flips.", badRequestResult.Value);
-
-            // Arrange
-            request.QueryString = new QueryString("?flips=10&groups=101"); // Invalid, as it's more than the allowed limit (100)
-
-            // Act
-            result = await _generateRandomCoinSequence.Run(request);
-
-            // Assert
-            badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Cannot return less then 1 and more than 100 groups of flips.", badRequestResult.Value);
+        [Theory]
+        [InlineData(0, 10)]
+        [InlineData(10, 0)]
+        [InlineData(101, 10)]
+        [InlineData(10, 101)]
+        public void GenerateSequence_InvalidInputs_Throws(int flips, int groups)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => _generateRandomCoinSequence.GenerateSequence(flips, groups));
         }
     }
 
