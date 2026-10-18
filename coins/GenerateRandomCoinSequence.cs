@@ -3,69 +3,87 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
 namespace coins
 {
     public class GenerateRandomCoinSequence
     {
-        private readonly ILogger<GenerateRandomCoinSequence> _logger;
-
-        public GenerateRandomCoinSequence(ILogger<GenerateRandomCoinSequence> log)
+        public GenerateRandomCoinSequence()
         {
-            _logger = log;
         }
 
-        [FunctionName("coins")]
-        [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiParameter(name: "flips", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **flips** parameter. How many coin flips per group.")]
-        [OpenApiParameter(name: "groups", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **groups** parameter. How many sets of flips to be returned.")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(RootObject), Description = "The OK response")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "text/plain", bodyType: typeof(string), Description = "The 400 response")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
+        [Function("coins")]
+        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req, FunctionContext context)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            var logger = context.GetLogger<GenerateRandomCoinSequence>();
+            logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            string flips = req.Query["flips"];
-            string groups = req.Query["groups"];
+                        string flips = null;
+            string groups = null;
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            flips = flips ?? data?.flips;
-            groups = groups ?? data?.groups;
+            // parse query
+            var query = req.Url.Query;
+            if (!string.IsNullOrEmpty(query))
+            {
+                var kvpairs = query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var kv in kvpairs)
+                {
+                    var parts = kv.Split('=', 2);
+                    if (parts.Length == 2)
+                    {
+                        if (parts[0] == "flips") flips = Uri.UnescapeDataString(parts[1]);
+                        if (parts[0] == "groups") groups = Uri.UnescapeDataString(parts[1]);
+                    }
+                }
+            }
+
+            using (var reader = new StreamReader(req.Body))
+            {
+                string requestBody = await reader.ReadToEndAsync();
+                if (!string.IsNullOrEmpty(requestBody))
+                {
+                    dynamic data = JsonConvert.DeserializeObject(requestBody);
+                    flips = flips ?? data?.flips;
+                    groups = groups ?? data?.groups;
+                }
+            }
 
             int flipsToDeliver = 16;
 
             if (flips != null)
                 flipsToDeliver = Convert.ToInt32(flips);
             if (flipsToDeliver > 100)
-                return new BadRequestObjectResult("Cannot return more than 100 coin flips.");
+            {
+                var bad = req.CreateResponse(HttpStatusCode.BadRequest);
+                bad.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+                bad.WriteString("Cannot return more than 100 coin flips.");
+                return bad;
+            }
 
             int groupsToDeliver = 8;
             if (groups != null)
                 groupsToDeliver = Convert.ToInt32(groups);
             if (groupsToDeliver > 100 || groupsToDeliver < 1)
-                return new BadRequestObjectResult("Cannot return less then 1 and more than 100 groups of flips.");
+            {
+                var bad = req.CreateResponse(HttpStatusCode.BadRequest);
+                bad.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+                bad.WriteString("Cannot return less then 1 and more than 100 groups of flips.");
+                return bad;
+            }
 
             var listOfListOfFips = new List<List<string>>();
 
+            var rnd = new Random();
             for (int n = 0; n < groupsToDeliver; n++)
             { 
                 var listOfFips = new List<string>();
                 for (int i = 0; i < flipsToDeliver; i++)
                 {
-                    Random r = new Random();
-                    var tossCoin = r.NextDouble();
+                    var tossCoin = rnd.NextDouble();
                     var result = "T";
 
                     if (tossCoin > 0.5) result = "H";
@@ -75,17 +93,45 @@ namespace coins
                 listOfListOfFips.Add(listOfFips);
             }
 
-            string defaultResponseMessage = string.IsNullOrEmpty(flips)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, toy requested a sequence of {flips}. This HTTP triggered function executed successfully.";
-
             var rb = new RootObject();
             rb.FlipsPerGroup = flipsToDeliver;
             rb.NumberOfGroups = groupsToDeliver;
             rb.Data = listOfListOfFips;
             string responseMessage = JsonConvert.SerializeObject(rb, Formatting.Indented);
 
-            return new OkObjectResult(responseMessage);
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+            response.WriteString(responseMessage);
+            return response;
+        }
+
+        // Exposed for unit testing: generate a coin sequence using same rules
+        public RootObject GenerateSequence(int flipsToDeliver, int groupsToDeliver)
+        {
+            if (flipsToDeliver < 1 || flipsToDeliver > 100)
+                throw new ArgumentOutOfRangeException(nameof(flipsToDeliver), "Cannot return more than 100 coin flips.");
+            if (groupsToDeliver < 1 || groupsToDeliver > 100)
+                throw new ArgumentOutOfRangeException(nameof(groupsToDeliver), "Cannot return less then 1 and more than 100 groups of flips.");
+
+            var listOfListOfFips = new List<List<string>>();
+            var rnd = new Random();
+            for (int n = 0; n < groupsToDeliver; n++)
+            {
+                var listOfFips = new List<string>();
+                for (int i = 0; i < flipsToDeliver; i++)
+                {
+                    var tossCoin = rnd.NextDouble();
+                    var result = tossCoin > 0.5 ? "H" : "T";
+                    listOfFips.Add(result);
+                }
+                listOfListOfFips.Add(listOfFips);
+            }
+
+            var rbOut = new RootObject();
+            rbOut.FlipsPerGroup = flipsToDeliver;
+            rbOut.NumberOfGroups = groupsToDeliver;
+            rbOut.Data = listOfListOfFips;
+            return rbOut;
         }
     }
 
