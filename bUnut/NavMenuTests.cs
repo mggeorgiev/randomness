@@ -19,6 +19,18 @@ namespace bUnut;
 /// </summary>
 public class NavMenuTests : BunitContext
 {
+    public NavMenuTests()
+    {
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string?>
+            {
+                ["CoinsFunctionAddress"] = "http://localhost/api/coins?",
+                ["PointsFunctionAddress"] = "http://localhost/api/points?"
+            })
+            .Build();
+
+        Services.AddSingleton<IConfiguration>(config);
+    }
     [Fact]
     public void NavMenuComponentRendersCorrectly()
     {

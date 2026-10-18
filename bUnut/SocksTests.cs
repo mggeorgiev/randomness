@@ -16,6 +16,18 @@ namespace bUnut;
 /// </summary>
 public class SocksTests : BunitContext
 {
+    public SocksTests()
+    {
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string?>
+            {
+                ["CoinsFunctionAddress"] = "http://localhost/api/coins?",
+                ["PointsFunctionAddress"] = "http://localhost/api/points?"
+            })
+            .Build();
+
+        Services.AddSingleton<IConfiguration>(config);
+    }
     [Fact]
     public void SocksComponentRendersCorrectly()
     {

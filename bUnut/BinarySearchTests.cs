@@ -19,6 +19,18 @@ namespace bUnut;
 /// </summary>
 public class BinarySearchTests : BunitContext
 {
+    public BinarySearchTests()
+    {
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string?>
+            {
+                ["CoinsFunctionAddress"] = "http://localhost/api/coins?",
+                ["PointsFunctionAddress"] = "http://localhost/api/points?"
+            })
+            .Build();
+
+        Services.AddSingleton<IConfiguration>(config);
+    }
     [Fact]
     public void BinarySearchComponentRendersCorrectly()
     {
@@ -34,7 +46,7 @@ public class BinarySearchTests : BunitContext
         ctx.Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.Render<frontend.Pages.BinarySearch>();
+        var cut = Render<frontend.Pages.BinarySearch>();
 
         // Assert
         Assert.NotNull(cut);

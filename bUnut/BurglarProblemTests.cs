@@ -20,6 +20,18 @@ namespace bUnut;
 /// </summary>
 public class BurglarProblemTests : BunitContext
 {
+    public BurglarProblemTests()
+    {
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string?>
+            {
+                ["CoinsFunctionAddress"] = "http://localhost/api/coins?",
+                ["PointsFunctionAddress"] = "http://localhost/api/points?"
+            })
+            .Build();
+
+        Services.AddSingleton<IConfiguration>(config);
+    }
     [Fact]
     public void BurglarProblemComponentRendersCorrectly()
     {
@@ -203,10 +215,10 @@ public class BurglarProblemTests : BunitContext
         //Act: Add the correct answer
         var inputElement = cut.Find("input");
         Assert.NotNull(inputElement);
-        inputElement.Change(correctAnswer);
+        await cut.InvokeAsync(() => inputElement.Change(correctAnswer));
 
         // Act - click button to increment counter
-        cut.Find("#Answer").Click();
+        await cut.InvokeAsync(() => cut.Find("#Answer").Click());
 
         await Task.Delay(100); // Adjust the delay time as needed
 

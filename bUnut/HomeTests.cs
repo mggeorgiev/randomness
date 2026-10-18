@@ -16,22 +16,35 @@ namespace bUnut;
 /// </summary>
 public class HomeTests : BunitContext
 {
+    public HomeTests()
+    {
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string?>
+            {
+                ["CoinsFunctionAddress"] = "http://localhost/api/coins?",
+                ["PointsFunctionAddress"] = "http://localhost/api/points?"
+            })
+            .Build();
+
+        Services.AddSingleton<IConfiguration>(config);
+    }
     [Fact]
     public void HomeComponentRendersCorrectly()
     {
 
         // Arrange
-        var path = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "frontend", "wwwroot", "functions_config.json");
-
         var config = new ConfigurationBuilder()
-            .AddJsonFile(path)
+            .AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string?>
+            {
+                ["CoinsFunctionAddress"] = "http://localhost/api/coins?",
+                ["PointsFunctionAddress"] = "http://localhost/api/points?"
+            })
             .Build();
 
-        using var ctx = new BunitContext();
-        ctx.Services.AddSingleton<IConfiguration>(config);
+        Services.AddSingleton<IConfiguration>(config);
 
         // Act
-        var cut = ctx.Render<frontend.Pages.Index>();
+        var cut = Render<frontend.Pages.Index>();
 
         // Assert
         Assert.NotNull(cut);
