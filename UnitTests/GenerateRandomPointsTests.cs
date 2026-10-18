@@ -1,98 +1,58 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using System;
+using System.Collections.Generic;
 using points;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
+using Microsoft.Extensions.Logging;
 
 namespace UnitTests
 {
     public class GenerateRandomPointsTests
     {
-        private readonly ILogger<GenerateRandomPoints> _logger;
         private readonly GenerateRandomPoints _generateRandomPoints;
+
+        private readonly Microsoft.Extensions.Logging.ILogger<GenerateRandomPoints> _logger;
 
         public GenerateRandomPointsTests()
         {
-            _logger = new LoggerFactory().CreateLogger<GenerateRandomPoints>();
+            _logger = new Microsoft.Extensions.Logging.LoggerFactory().CreateLogger<GenerateRandomPoints>();
             _generateRandomPoints = new GenerateRandomPoints(_logger);
         }
 
         [Fact]
-        public async Task Run_WhenCalledWithValidPoints_ReturnsOkObjectResult()
+        public void GeneratePoints_WithValidCount_ReturnsCorrectNumber()
         {
             // Arrange
-            var context = new DefaultHttpContext();
-            var request = context.Request;
-            request.QueryString = new QueryString("?points=10");
+            int count = 10;
 
             // Act
-            var result = await _generateRandomPoints.Run(request);
+            var result = _generateRandomPoints.GeneratePoints(count);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.NotNull(okResult.Value);
-
-            var jsonResponse = okResult.Value as string;
-            Assert.NotNull(jsonResponse);
-
-            var pointsArray = JArray.Parse(jsonResponse);
-            Assert.Equal(10, pointsArray.Count);
+            Assert.NotNull(result);
+            Assert.Equal(count, result.Count);
         }
 
         [Fact]
-        public async Task Run_WhenCalledWithInvalidPoints_ReturnsBadRequest()
+        public void GeneratePoints_ValuesAreInRange()
         {
             // Arrange
-            var context = new DefaultHttpContext();
-            var request = context.Request;
-            request.QueryString = new QueryString("?points=0"); // Invalid, as it's less than the allowed limit (1)
+            int count = 100;
 
             // Act
-            var result = await _generateRandomPoints.Run(request);
+            var result = _generateRandomPoints.GeneratePoints(count);
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Cannot return less then 1 and more than 1000 points", badRequestResult.Value);
+            Assert.All(result, p => Assert.InRange(p.x, 0.0, 1.0));
+            Assert.All(result, p => Assert.InRange(p.y, 0.0, 1.0));
         }
 
-        [Fact]
-        public async Task Run_WhenCalledWithoutPoints_ReturnsBadRequest()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1001)]
+        public void GeneratePoints_InvalidCount_Throws(int invalidCount)
         {
-            // Arrange
-            var context = new DefaultHttpContext();
-            var request = context.Request;
-            request.QueryString = new QueryString(""); // Invalid, as it's less than the allowed limit (1)
-
-            // Act
-            var result = await _generateRandomPoints.Run(request);
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Points parameter that scpecifies the number of points is requried. Cannot return less then 1 and more than 1000 points", badRequestResult.Value);
-        }
-
-        [Fact]
-        public async Task Run_WhenCalledWithEmptyPoints_ReturnsBadRequest()
-        {
-            // Arrange
-            var context = new DefaultHttpContext();
-            var request = context.Request;
-            request.QueryString = new QueryString("?points="); // Invalid, as it's less than the allowed limit (1)
-
-            // Act
-            var result = await _generateRandomPoints.Run(request);
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Points parameter that scpecifies the number of points is requried. Cannot return less then 1 and more than 1000 points", badRequestResult.Value);
+            // Act & Assert
+            Assert.Throws<ArgumentOutOfRangeException>(() => _generateRandomPoints.GeneratePoints(invalidCount));
         }
     }
 }
